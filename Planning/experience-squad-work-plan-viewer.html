@@ -240,35 +240,11 @@ a{color:inherit;text-decoration:none}
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 3a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H1.75zm0 4a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H1.75zm0 4a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"/></svg>
         导出 Markdown
       </button>
-      <button id="githubToggleBtn" class="save-btn" onclick="toggleGithubPanel()" title="配置 GitHub 自动保存">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.73 0 8.33c0 3.68 2.29 6.8 5.47 7.9.4.08.55-.18.55-.4 0-.2-.01-.86-.01-1.56-2.23.5-2.7-.98-2.7-.98-.36-.96-.9-1.22-.9-1.22-.74-.53.06-.52.06-.52.82.06 1.24.87 1.24.87.73 1.3 1.92.93 2.39.71.07-.55.29-.94.52-1.16-1.78-.21-3.64-.93-3.64-4.14 0-.91.31-1.65.82-2.23-.08-.21-.36-1.07.08-2.23 0 0 .67-.22 2.2.85.64-.19 1.32-.29 2-.29.68 0 1.36.1 2 .29 1.53-1.07 2.2-.85 2.2-.85.44 1.16.16 2.02.08 2.23.51.58.82 1.32.82 2.23 0 3.22-1.87 3.93-3.65 4.14.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.21 0 .22.15.49.55.4A8.35 8.35 0 0016 8.33C16 3.73 12.42 0 8 0z"/></svg>
-        GitHub 同步
-      </button>
     </div>
   </div>
 </header>
 
-<div id="unsavedBanner" class="unsaved-banner">⚠ 标注数据已自动保存在浏览器中。如需多人共享，请开启 GitHub 自动保存。</div>
-<div id="githubPanel" class="sync-panel">
-  <div class="container">
-    <div class="sync-grid">
-      <div class="sync-field"><label for="ghOwner">Owner</label><input id="ghOwner" class="sync-input" type="text" placeholder="your-org"></div>
-      <div class="sync-field"><label for="ghRepo">Repo</label><input id="ghRepo" class="sync-input" type="text" placeholder="your-repo"></div>
-      <div class="sync-field"><label for="ghBranch">Branch</label><input id="ghBranch" class="sync-input" type="text" placeholder="main"></div>
-      <div class="sync-field"><label for="ghPath">File Path</label><input id="ghPath" class="sync-input" type="text" placeholder="Planning/workplan-annotations.js"></div>
-      <div class="sync-field"><label for="ghToken">Token (Fine-grained PAT)</label><input id="ghToken" class="sync-input" type="password" placeholder="github_pat_xxx"></div>
-    </div>
-    <div class="sync-actions">
-      <label class="sync-switch"><input id="ghEnabled" type="checkbox">启用延迟自动保存（3 秒）</label>
-      <button class="save-btn" onclick="saveGithubConfig()">保存设置</button>
-      <button class="save-btn" onclick="pullFromGitHub()">从 GitHub 拉取</button>
-      <button class="save-btn" onclick="pushToGitHub('manual')">立即同步</button>
-      <button class="save-btn" onclick="clearGithubToken()">清除 Token</button>
-      <span id="ghStatus" class="sync-status">未启用 GitHub 自动保存</span>
-    </div>
-    <div class="note-hint">Token 仅保存在当前浏览器 localStorage；不会写入仓库文件。</div>
-  </div>
-</div>
+<div id="unsavedBanner" class="unsaved-banner">⚠ 标注数据已自动保存在浏览器中。</div>
 <main class="container">
   <div id="overview" class="overview-view active"></div>
   <div id="detail" class="detail-view"></div>
@@ -288,9 +264,9 @@ const NOTES = Object.assign({}, _a.notes);
 const _LS_KEY = 'workplan-annotations';
 const _GH_CFG_KEY = 'workplan-github-sync-v1';
 const _GH_DEFAULTS = Object.freeze({
-  enabled: false,
-  owner: '',
-  repo: '',
+  enabled: true,
+  owner: 'lukeatwd',
+  repo: 'epic-board',
   branch: 'main',
   path: 'Planning/workplan-annotations.js',
   token: '',
@@ -320,9 +296,12 @@ function _loadGithubCfg() {
     const raw = localStorage.getItem(_GH_CFG_KEY);
     const parsed = raw ? JSON.parse(raw) : {};
     const merged = { ..._GH_DEFAULTS, ...(parsed || {}) };
+    merged.enabled = true;
     return _inferGithubFromLocation(merged);
   } catch (e) {
-    return _inferGithubFromLocation({ ..._GH_DEFAULTS });
+    const fallback = { ..._GH_DEFAULTS };
+    fallback.enabled = true;
+    return _inferGithubFromLocation(fallback);
   }
 }
 
@@ -334,14 +313,20 @@ function _getGithubRef(cfg) {
   return `${cfg.owner}/${cfg.repo}@${cfg.branch}:${cfg.path}`;
 }
 
-function _readGithubConfigFromInputs() {
+function _readGithubConfigFromInputs(base = ghCfg) {
+  const enabledEl = document.getElementById('ghEnabled');
+  const ownerEl = document.getElementById('ghOwner');
+  const repoEl = document.getElementById('ghRepo');
+  const branchEl = document.getElementById('ghBranch');
+  const pathEl = document.getElementById('ghPath');
+  const tokenEl = document.getElementById('ghToken');
   return {
-    enabled: !!document.getElementById('ghEnabled')?.checked,
-    owner: (document.getElementById('ghOwner')?.value || '').trim(),
-    repo: (document.getElementById('ghRepo')?.value || '').trim(),
-    branch: (document.getElementById('ghBranch')?.value || '').trim() || 'main',
-    path: (document.getElementById('ghPath')?.value || '').trim() || 'Planning/workplan-annotations.js',
-    token: (document.getElementById('ghToken')?.value || '').trim(),
+    enabled: enabledEl ? !!enabledEl.checked : !!base.enabled,
+    owner: ownerEl ? (ownerEl.value || '').trim() : (base.owner || ''),
+    repo: repoEl ? (repoEl.value || '').trim() : (base.repo || ''),
+    branch: branchEl ? ((branchEl.value || '').trim() || 'main') : (base.branch || 'main'),
+    path: pathEl ? ((pathEl.value || '').trim() || 'Planning/workplan-annotations.js') : (base.path || 'Planning/workplan-annotations.js'),
+    token: tokenEl ? (tokenEl.value || '').trim() : (base.token || ''),
   };
 }
 
