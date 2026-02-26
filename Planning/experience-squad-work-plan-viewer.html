@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>体验提升小分队工作规划 v5</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:hsl(0 0% 100%);--fg:hsl(222 84% 4.9%);
+  --card:hsl(0 0% 100%);--card-fg:hsl(222 84% 4.9%);
+  --muted:hsl(210 40% 96.1%);--muted-fg:hsl(215 16% 47%);
+  --border:hsl(214 32% 91.4%);
+  --accent:hsl(210 40% 96.1%);--accent-fg:hsl(222 47% 11.2%);
+  --primary:hsl(222 47% 11.2%);--primary-fg:hsl(210 40% 98%);
+  --destructive:hsl(0 84% 60%);--warning:hsl(38 92% 50%);--info:hsl(221 83% 53%);
+  --radius:0.5rem;--radius-lg:0.75rem;
+  --shadow-sm:0 1px 2px 0 rgb(0 0 0/.05);
+  --shadow:0 1px 3px 0 rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+  --shadow-md:0 4px 6px -1px rgb(0 0 0/.1),0 2px 4px -2px rgb(0 0 0/.1);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
+  background:var(--bg);color:var(--fg);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+
+/* Header */
+.site-header{border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;background:var(--bg);z-index:50}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.site-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.025em}
+.site-meta{display:flex;gap:1rem;font-size:0.8125rem;color:var(--muted-fg)}
+.site-meta span{display:flex;align-items:center;gap:0.25rem}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:0.75rem;flex-wrap:wrap;padding:1.25rem 0}
+.stat-card{display:flex;flex-direction:column;padding:0.75rem 1rem;border:1px solid var(--border);border-radius:var(--radius);min-width:120px;background:var(--card)}
+.stat-label{font-size:0.75rem;color:var(--muted-fg);font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+.stat-value{font-size:1.5rem;font-weight:700;letter-spacing:-0.025em;margin-top:0.125rem}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.6875rem;font-weight:600;line-height:1.4;letter-spacing:0.02em;white-space:nowrap}
+.badge-p0{background:hsl(0 84% 95%);color:hsl(0 72% 42%);border:1px solid hsl(0 72% 88%)}
+.badge-p1{background:hsl(38 92% 95%);color:hsl(32 80% 32%);border:1px solid hsl(38 80% 82%)}
+.badge-p2{background:hsl(221 83% 95%);color:hsl(221 70% 40%);border:1px solid hsl(221 70% 85%)}
+.badge-platform{background:var(--muted);color:var(--muted-fg);border:1px solid var(--border);font-weight:500}
+
+/* Epic cards grid */
+.section-title{font-size:1.25rem;font-weight:600;letter-spacing:-0.025em;margin-bottom:1rem}
+.epic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;padding-bottom:2rem}
+.epic-card{border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;cursor:pointer;transition:all .15s ease;background:var(--card)}
+.epic-card:hover{box-shadow:var(--shadow-md);border-color:hsl(214 32% 82%);transform:translateY(-1px)}
+.epic-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;margin-bottom:0.5rem}
+.epic-id{font-size:0.75rem;font-weight:600;color:var(--primary);background:var(--muted);padding:0.125rem 0.5rem;border-radius:var(--radius);white-space:nowrap}
+.epic-story-count{font-size:0.75rem;color:var(--muted-fg);white-space:nowrap}
+.epic-name{font-size:0.9375rem;font-weight:600;letter-spacing:-0.015em;margin-bottom:0.5rem;line-height:1.4}
+.epic-desc{font-size:0.8125rem;color:var(--muted-fg);line-height:1.5;margin-bottom:0.75rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.epic-priorities{display:flex;gap:0.375rem;flex-wrap:wrap}
+.priority-pill{font-size:0.6875rem;padding:0.125rem 0.375rem;border-radius:var(--radius);font-weight:600}
+.priority-pill.p0{background:hsl(0 84% 95%);color:hsl(0 72% 42%)}
+.priority-pill.p1{background:hsl(38 92% 95%);color:hsl(32 80% 32%)}
+.priority-pill.p2{background:hsl(221 83% 95%);color:hsl(221 70% 40%)}
+
+/* Epic detail view */
+.overview-view{display:none}
+.overview-view.active{display:block}
+.detail-view{display:none}
+.detail-view.active{display:block}
+
+.breadcrumb{display:flex;align-items:center;gap:0.5rem;padding:1rem 0;font-size:0.875rem}
+.breadcrumb-link{color:var(--muted-fg);cursor:pointer;display:flex;align-items:center;gap:0.25rem;transition:color .15s}
+.breadcrumb-link:hover{color:var(--fg)}
+.breadcrumb-sep{color:var(--border)}
+.breadcrumb-current{font-weight:500}
+
+.epic-detail-header{padding:1rem 0 0.75rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.epic-detail-title{font-size:1.5rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:0.375rem}
+.epic-detail-desc{font-size:0.875rem;color:var(--muted-fg);line-height:1.6;max-width:72ch}
+
+/* Filter bar */
+.filter-bar{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.filter-group{display:flex;gap:0.25rem;background:var(--muted);border-radius:var(--radius);padding:0.1875rem}
+.filter-btn{padding:0.3125rem 0.75rem;border:none;background:transparent;border-radius:calc(var(--radius) - 2px);font-size:0.8125rem;font-weight:500;cursor:pointer;color:var(--muted-fg);transition:all .15s;font-family:inherit}
+.filter-btn.active{background:var(--card);color:var(--fg);box-shadow:var(--shadow-sm)}
+.filter-btn:hover:not(.active){color:var(--fg)}
+.filter-label{font-size:0.75rem;color:var(--muted-fg);font-weight:500;margin-right:0.25rem}
+.story-count-label{margin-left:auto;font-size:0.8125rem;color:var(--muted-fg)}
+
+/* Story cards */
+.story-list{display:flex;flex-direction:column;gap:0.5rem;padding-bottom:2rem}
+.story-card{border:1px solid var(--border);border-radius:var(--radius-lg);transition:border-color .15s;background:var(--card);position:relative}
+.story-card:hover{border-color:hsl(214 32% 82%)}
+.story-card-header{display:flex;align-items:center;gap:0.75rem;padding:0.875rem 1rem;cursor:pointer;user-select:none}
+.story-card-header:hover{background:hsl(210 40% 98%)}
+.story-priority{flex-shrink:0}
+.story-title{flex:1;font-size:0.875rem;font-weight:500;line-height:1.4}
+.story-title .story-id{color:var(--muted-fg);font-weight:600;margin-right:0.375rem;font-size:0.8125rem}
+.story-platforms{display:flex;gap:0.25rem;flex-shrink:0}
+.story-expand-icon{flex-shrink:0;width:1.25rem;height:1.25rem;color:var(--muted-fg);transition:transform .2s}
+.story-card.expanded .story-expand-icon{transform:rotate(180deg)}
+
+.story-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border)}
+.story-card.expanded .story-body{display:block}
+.story-section{margin-top:0.75rem}
+.story-section-label{font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted-fg);margin-bottom:0.25rem}
+.story-section-content{font-size:0.8125rem;color:var(--fg);line-height:1.6}
+
+/* Sources */
+.source-item{padding:0.375rem 0;border-bottom:1px solid var(--border)}
+.source-item:last-child{border-bottom:none}
+.source-file{font-weight:600;color:var(--fg);font-size:0.6875rem;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+.source-line{color:var(--muted-fg);font-size:0.6875rem}
+.source-quote{margin-top:0.25rem;padding-left:0.75rem;border-left:2px solid var(--border);color:var(--muted-fg);font-size:0.75rem;word-break:break-all}
+
+/* Epic quick nav */
+.epic-nav{display:flex;gap:0.375rem;flex-wrap:wrap;padding:0.75rem 0;border-bottom:1px solid var(--border);margin-bottom:0.5rem}
+.epic-nav-btn{padding:0.25rem 0.5rem;border:1px solid var(--border);background:var(--card);border-radius:var(--radius);font-size:0.6875rem;font-weight:500;cursor:pointer;color:var(--muted-fg);transition:all .15s;font-family:inherit;position:relative}
+.epic-nav-btn:hover{border-color:hsl(214 32% 82%);color:var(--fg)}
+.epic-nav-btn.current{background:var(--primary);color:var(--primary-fg);border-color:var(--primary)}
+.epic-nav-btn::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) scale(0.96);padding:0.375rem 0.75rem;background:var(--primary);color:var(--primary-fg);font-size:0.75rem;font-weight:500;line-height:1.4;border-radius:var(--radius);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s,transform .15s;z-index:200}
+.epic-nav-btn::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--primary);pointer-events:none;opacity:0;transition:opacity .15s;z-index:200}
+.epic-nav-btn:hover::after{opacity:1;transform:translateX(-50%) scale(1)}
+.epic-nav-btn:hover::before{opacity:1}
+
+/* Responsive */
+@media(max-width:640px){
+  .epic-grid{grid-template-columns:1fr}
+  .stats-bar{flex-direction:column}
+  .stat-card{flex-direction:row;align-items:center;justify-content:space-between;min-width:0}
+  .stat-value{font-size:1.25rem;margin-top:0}
+  .filter-bar{flex-direction:column;align-items:flex-start}
+  .story-count-label{margin-left:0}
+  .story-card-header{flex-wrap:wrap}
+  .story-platforms{order:10;width:100%;margin-top:0.25rem}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:hsl(214 32% 82%);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted-fg)}
+
+/* Tag system */
+.badge-tag{font-size:0.6875rem;padding:0.125rem 0.5rem;border-radius:9999px;font-weight:600;cursor:default;letter-spacing:0.02em}
+.badge-tag.confirmed{background:hsl(142 72% 94%);color:hsl(142 60% 30%);border:1px solid hsl(142 50% 78%)}
+.badge-tag.pending{background:hsl(38 92% 95%);color:hsl(32 80% 32%);border:1px solid hsl(38 80% 82%)}
+.badge-tag.weak{background:hsl(270 60% 95%);color:hsl(270 45% 40%);border:1px solid hsl(270 40% 82%)}
+.badge-tag.missing{background:hsl(215 20% 93%);color:hsl(215 14% 45%);border:1px solid hsl(215 18% 82%)}
+
+.tag-selector{position:relative;flex-shrink:0}
+.tag-btn{padding:0.1875rem 0.5rem;border:1px dashed var(--border);background:transparent;border-radius:9999px;font-size:0.6875rem;font-weight:500;cursor:pointer;color:var(--muted-fg);transition:all .15s;font-family:inherit;white-space:nowrap}
+.tag-btn:hover{border-color:hsl(214 32% 72%);color:var(--fg)}
+.tag-btn.has-tag{border-style:solid}
+.tag-menu{display:none;position:absolute;top:100%;right:0;margin-top:0.25rem;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-md);z-index:100;min-width:140px;padding:0.25rem}
+.tag-menu.open{display:block}
+.tag-menu-item{display:block;width:100%;padding:0.375rem 0.625rem;border:none;background:transparent;text-align:left;font-size:0.75rem;font-weight:500;cursor:pointer;border-radius:calc(var(--radius) - 2px);color:var(--fg);font-family:inherit;transition:background .1s}
+.tag-menu-item:hover{background:var(--muted)}
+.tag-menu-item.active{background:var(--accent);font-weight:600}
+.tag-dot{display:inline-block;width:0.5rem;height:0.5rem;border-radius:50%;margin-right:0.375rem;vertical-align:middle}
+.tag-dot.c-confirmed{background:hsl(142 60% 50%)}
+.tag-dot.c-pending{background:hsl(38 80% 55%)}
+.tag-dot.c-weak{background:hsl(270 45% 60%)}
+.tag-dot.c-missing{background:hsl(215 14% 65%)}
+
+/* Save button */
+.save-btn{padding:0.375rem 0.75rem;border:1px solid var(--border);background:var(--card);border-radius:var(--radius);font-size:0.75rem;font-weight:500;cursor:pointer;color:var(--muted-fg);transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:0.375rem}
+.save-btn:hover{border-color:hsl(214 32% 72%);color:var(--fg)}
+.save-btn.dirty{border-color:hsl(38 80% 55%);color:hsl(32 80% 32%);background:hsl(48 96% 95%)}
+.unsaved-banner{display:none;padding:0.5rem 1rem;background:hsl(48 96% 95%);border-bottom:1px solid hsl(45 80% 78%);font-size:0.75rem;color:hsl(30 60% 20%);text-align:center}
+.unsaved-banner.show{display:block}
+
+/* GitHub sync panel */
+.sync-panel{display:none;border-bottom:1px solid var(--border);padding:0.75rem 0;background:var(--bg)}
+.sync-panel.open{display:block}
+.sync-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0.5rem}
+.sync-field{display:flex;flex-direction:column;gap:0.25rem}
+.sync-field label{font-size:0.6875rem;color:var(--muted-fg);font-weight:600}
+.sync-input{padding:0.375rem 0.5rem;border:1px solid var(--border);border-radius:var(--radius);font-size:0.75rem;font-family:inherit;background:var(--card);outline:none}
+.sync-input:focus{border-color:hsl(221 83% 53%)}
+.sync-actions{display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-top:0.5rem}
+.sync-switch{display:inline-flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:var(--muted-fg)}
+.sync-status{font-size:0.75rem;color:var(--muted-fg)}
+.sync-status.ok{color:hsl(142 60% 30%)}
+.sync-status.err{color:hsl(0 72% 42%)}
+
+/* All-view epic group header */
+.all-epic-group-header{padding:0.625rem 0;margin-top:0.75rem;font-size:0.8125rem;font-weight:600;color:var(--muted-fg);border-bottom:1px solid var(--border)}
+.all-epic-group-header:first-child{margin-top:0}
+.all-epic-group-id{font-weight:700;color:var(--fg);margin-right:0.5rem}
+
+/* Notes */
+.note-block{margin-top:0.75rem;padding:0.375rem 0.625rem;background:hsl(48 96% 95%);border-left:3px solid hsl(45 90% 55%);border-radius:var(--radius);font-size:0.8125rem;line-height:1.5;color:hsl(30 60% 20%);white-space:pre-wrap;word-break:break-word;display:flex;align-items:baseline;gap:0.5rem}
+.note-block-label{font-size:0.6875rem;font-weight:600;letter-spacing:0.02em;color:hsl(40 50% 40%);flex-shrink:0}
+.note-block-text{flex:1;cursor:pointer;border-radius:2px;transition:background .1s}
+.note-block-text:hover{background:hsl(45 80% 88%)}
+.note-block .link-remove{flex-shrink:0;align-self:flex-start}
+.note-indicator{flex-shrink:0;display:inline-flex;align-items:center;line-height:0}
+
+.note-add-btn{display:inline-flex;align-items:center;gap:0.375rem;margin-top:0.75rem;padding:0.375rem 0.625rem;background:transparent;border:1px dashed var(--border);border-radius:var(--radius);font-size:0.75rem;font-weight:500;color:var(--muted-fg);cursor:pointer;transition:all .15s;font-family:inherit}
+.note-add-btn:hover{color:var(--fg);border-color:hsl(214 32% 82%)}
+.note-input-wrap{display:none;margin-top:0.75rem}
+.note-input-wrap.open{display:block}
+.note-input{width:100%;padding:0.5rem 0.625rem;border:1px solid hsl(45 80% 78%);border-radius:var(--radius);font-size:0.8125rem;font-family:inherit;outline:none;background:hsl(48 96% 97%);resize:vertical;min-height:2.5rem;line-height:1.5;transition:border-color .15s}
+.note-input:focus{border-color:hsl(45 90% 55%)}
+.note-hint{font-size:0.6875rem;color:var(--muted-fg);margin-top:0.25rem}
+
+/* External link */
+.link-icon{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;border-radius:var(--radius);cursor:pointer;transition:all .15s;color:var(--muted-fg);border:none;background:transparent;padding:0}
+.link-icon:hover{background:var(--muted);color:var(--fg)}
+.link-icon.has-link{color:hsl(221 83% 53%)}
+.link-icon.has-link:hover{color:hsl(221 83% 43%)}
+.link-icon svg{width:0.875rem;height:0.875rem}
+.link-input-row{display:none;padding:0 1rem 0.5rem;gap:0.5rem;align-items:center}
+.link-input-row.open{display:flex}
+.link-input{flex:1;padding:0.375rem 0.625rem;border:1px solid var(--border);border-radius:var(--radius);font-size:0.75rem;font-family:inherit;outline:none;transition:border-color .15s}
+.link-input:focus{border-color:hsl(221 83% 53%)}
+.link-display{display:inline-flex;align-items:center;gap:0.375rem;padding:0 1rem 0.5rem;font-size:0.75rem}
+.link-display a{color:hsl(221 83% 53%);text-decoration:none;word-break:break-all}
+.link-display a:hover{text-decoration:underline}
+.link-remove{border:none;background:transparent;color:var(--muted-fg);cursor:pointer;font-size:0.75rem;padding:0.125rem 0.25rem;border-radius:var(--radius);transition:all .15s;font-family:inherit}
+.link-remove:hover{color:hsl(0 84% 60%);background:hsl(0 84% 97%)}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .2s ease}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <div class="site-title">体验提升小分队工作规划 v5</div>
+    <div class="site-meta">
+      <span>📅 2026-02-23</span>
+      <span>📋 WeDevote Bible 体验提升</span>
+      <button id="saveBtn" class="save-btn" onclick="handleSaveBtn()" title="将标注数据导出到 workplan-annotations.js（用于分享给他人）">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M13.75 7h-3v5.296l1.943-2.048a.75.75 0 011.114 1.004l-3.25 3.5a.75.75 0 01-1.114 0l-3.25-3.5a.75.75 0 111.114-1.004l1.943 2.048V7h1.5V1.75a.75.75 0 00-1.5 0V7h-3A2.25 2.25 0 004 9.25v7.5A2.25 2.25 0 006.25 19h7.5A2.25 2.25 0 0016 16.75v-7.5A2.25 2.25 0 0013.75 7z"/></svg>
+        保存到文件
+      </button>
+      <button class="save-btn" onclick="exportMarkdown()" title="导出为 Markdown 文件">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 3a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H1.75zm0 4a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H1.75zm0 4a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"/></svg>
+        导出 Markdown
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="unsavedBanner" class="unsaved-banner">⚠ 标注数据已自动保存在浏览器中。</div>
+<main class="container">
+  <div id="overview" class="overview-view active"></div>
+  <div id="detail" class="detail-view"></div>
+</main>
+
+<script src="workplan-annotations.js"></script>
+<script>
+const EPICS = [{"id": "E1", "name": "可达性与稳定性底座（网络/性能）", "desc": "聚焦网络可达性解释与性能基线，减少“能打开但用不了”的挫败。", "stories": [{"id": "E1-S01", "title": "国内网络“资源不可达”自助提示与合规指引（不提供离线下载）", "desc": "当检测到资源加载异常（疑似 GFW/弱网）时，提供明确的原因解释与可执行的自助排障步骤（重试/切换网络/切换线路/使用可访问的 Web 镜像或 PWA）。对涉及版权的资源给出合规说明：不提供离线下载/导出通道。", "platform": "App | Web", "why": "系统性网络不可达会让多个功能同时失败；在“不可达”场景下给出可解释、可执行的下一步，能显著降低挫败感与重复工单，同时避免因离线下载触碰版权风险。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题，直接影响核心指标或用户能否完成关键任务，需要优先止血并纳入门禁验收。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "29", "quote": "防火墙/网络不可达是底层系统性问题——客服在 5,127 个会话中提及防火墙，用户主动提到翻墙/VPN 的有 226 个会话。"}, {"file": "platform-experience-analysis.md", "line": "48", "quote": "政策韧性：因宗教政策问题，App可能在某些国家/地区被下架。Web + PWA是这些地区用户的生命线，不是可选项。"}]}, {"id": "E1-S02", "title": "性能基线：冷启动 <2s 与关键页面 P95 <2s（计划/搜索/播放）", "desc": "建立冷启动与关键页面加载性能目标，优先优化计划页/资源页/搜索页等高频入口。", "platform": "App | Web", "why": "性能本质上是“用户节奏”问题；慢会直接降低持续使用与习惯形成概率。", "priority": "P1", "priorityNote": "该项对核心任务完成率有显著提升，但不属于“完全不可用/不可恢复”的阻塞项，适合在P0问题清零与底座稳定后推进。", "sources": [{"file": "wdbible-plan-raw.md", "line": "15", "quote": "性能与稳定性：冷启动 <2s，Crash-free >99.9%"}, {"file": "experience-themes-framework.md", "line": "242-246", "quote": "ET-03 每次启动App的体验"}]}]}, {"id": "E2", "name": "身份与登录（注册/登录/验证码/账号管理）", "desc": "身份链路畅通是同步、计划、付费等的前置。", "stories": [{"id": "E2-S01", "title": "验证码多通道容灾（到达率监控 + 自动切换）", "desc": "短信验证码支持多供应商通道与自动切换，建立送达率/延迟看板，并在异常时自动降级到可用通道（含邮件/语音等备用验证策略）。", "platform": "App | Web", "why": "登录失败会放大同步/计划/付费的连锁问题；多通道容灾是“身份入口”的稳定性底座。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle1.md", "line": "18", "quote": "账号登录注册与验证码 | 1,258 | 7.67% | P0"}]}, {"id": "E2-S02", "title": "登录方式适配国际/华人场景（Apple/Google/微信/邮箱备选）", "desc": "补齐关键第三方登录与备选验证方式，降低不同地区用户的身份门槛。", "platform": "App | Web", "why": "不同地区的可用登录方式差异显著；不匹配会造成“看得到但进不去”。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "138", "quote": "ET01-G4 | 注册方式对华人用户的适配性"}]}, {"id": "E2-S03", "title": "修复邮箱注册“验证码按钮变灰”等阻塞 bug", "desc": "修复特定邮箱后缀导致的注册流程阻塞，并补齐前端可解释提示。", "platform": "App | Web", "why": "这是纯阻塞缺陷，修复成本低但对转化影响直接。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle2.md", "line": "210", "quote": "邮箱注册 UI bug：输完邮箱地址后发送验证码按钮变灰"}]}, {"id": "E2-S04", "title": "账号删除/注销的端到端可完成（含跨产品依赖提示）", "desc": "让用户能自助完成账号删除/注销，清晰提示跨产品依赖并提供可操作的解决路径。", "platform": "App | Web", "why": "隐私与合规会逐步成为基础要求；“想退出但退不了”会损害信任。", "priority": "P1", "priorityNote": "该项对信任与用户资产有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "171", "quote": "是否支持账号删除（GDPR/隐私法规要求）？"}]}, {"id": "E2-S05", "title": "登录态与会话过期体验（不打断任务、可续接）", "desc": "当会话过期时不把用户踢回首页，而是在当前任务上下文中引导重新验证并续接原任务。", "platform": "App | Web", "why": "身份失效如果导致任务中断，会被用户感知为“数据丢了/功能坏了”，放大投诉与流失。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "139", "quote": "ET01-G5 | 登录状态管理"}]}, {"id": "E2-S06", "title": "验证码重发可视化（冷却/通道状态/备用验证入口）", "desc": "展示重发冷却时间、当前通道状态与备用验证入口，并提供清晰的失败原因提示。", "platform": "App | Web", "why": "可见性不足会导致重复提交与焦虑；低成本即可显著提升登录成功率与首解率。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "181", "quote": "验证码重发可视化 | 减少重复提交 | 78"}]}]}, {"id": "E3", "name": "同步与数据资产安全（进度/恢复/冲突）", "desc": "用户资产不可丢；同步可见、可恢复、可解释。", "stories": [{"id": "E3-S01", "title": "跨设备同步成功率 ≥99%：建立同步状态可视化页", "desc": "提供同步状态/最近同步时间/失败原因/重试页面，允许用户自助诊断与触发同步。", "platform": "App | Web", "why": "同步问题的痛点不止是失败本身，更是“不可解释”；可视化能显著降低恐慌与重复工单。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle1.md", "line": "19", "quote": "数据同步与记录丢失 | 726 | 4.42% | P0"}]}, {"id": "E3-S02", "title": "退出登录后的本地数据安全隐藏（不阻塞退出）", "desc": "退出登录后，本地笔记/高亮等用户资产通过加密/隔离方式隐藏但可恢复，避免数据泄漏风险。", "platform": "App | Web", "why": "退出后直接清理会制造资产丢失的强烈不信任，但不隐藏又会带来隐私泄漏风险。", "priority": "P0", "priorityNote": "该项同时涉及隐私泄漏风险与用户资产信任。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "258-262", "quote": "P5：笔记/高亮数据丢失——退出登录再重新登录后发现消失"}]}, {"id": "E3-S03", "title": "同步冲突的最小可行策略（检测 + 提示 + 恢复）", "desc": "对笔记/祷告等长文本引入冲突检测与合并策略。", "platform": "App | Web", "why": "跨端编辑会不可避免地产生冲突；最后写入覆盖会制造真实数据丢失。", "priority": "P1", "priorityNote": "该项对信任与用户资产有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "1499", "quote": "离线数据的同步策略和冲突处理机制是什么？"}]}, {"id": "E3-S04", "title": "阅读进度跨设备一致（读/听进度分别同步）", "desc": "保证阅读位置与听经位置在多设备间稳定一致。", "platform": "App | Web", "why": "进度不一致会破坏连续性，长期会放弃跨端使用。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1211-1218", "quote": "阅读进度跨设备不同步 | 同步成功率 ≥99%"}]}, {"id": "E3-S05", "title": "笔记/高亮恢复向导（自助找回 + 云端重拉 + 风险提示）", "desc": "提供恢复向导：展示可恢复范围与时间点，支持一键触发云端重拉。", "platform": "App | Web", "why": "同步问题的高痛点来自不可解释且不可自助；恢复向导能降低恐慌与重复工单。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "112", "quote": "短期止血：同步状态页、恢复向导"}]}, {"id": "E3-S06", "title": "跨端同步SLA落地（阅读/笔记/播放：成功率/延迟/丢失率）", "desc": "为阅读进度、笔记/高亮、播放进度设定并落地同步SLA。", "platform": "App | Web", "why": "同步是用户资产安全底线；没有SLA就无法持续治理与止损。", "priority": "P0", "priorityNote": "该项属于信任与用户资产相关的高优先级问题。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1214-1218", "quote": "笔记同步延迟/丢失 | 延迟<3秒，丢失率<0.1%"}]}]}, {"id": "E4", "name": "找经文与搜索（精确/繁简/原文/语义/全局）", "desc": "查经效率与专业用户留存的地基能力。", "stories": [{"id": "E4-S01", "title": "繁体中文搜索无结果修复（繁简转换 + 索引重建）", "desc": "修复繁体检索索引与繁简匹配逻辑。", "platform": "App | Web", "why": "搜索是核心任务；对繁体用户等同于功能不可用。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "208-214", "quote": "繁体中文搜索无结果"}]}, {"id": "E4-S02", "title": "原文搜索不可用修复（希伯来/希腊文索引）", "desc": "重建原文索引与查询链路，恢复原文检索能力。", "platform": "App | Web", "why": "深度研经用户是差异化人群；原文不可用会直接流失这类用户。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "208-214", "quote": "原文搜索不可用"}]}, {"id": "E4-S03", "title": "经文引用格式直达（如约3:16）与容错解析", "desc": "支持多种经文引用输入格式与容错，并一键跳转。", "platform": "App | Web", "why": "这是找经文最常见的精确场景，属于基线体验。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "65", "quote": "查找经文与检索内容 | 快速定位"}]}, {"id": "E4-S04", "title": "语义搜索（用描述找经文）MVP", "desc": "允许用户输入自然语言描述，输出可验证的经文列表+上下文预览。", "platform": "App | Web", "why": "AI 时代用户习惯已改变；App 内必须提供可验证的语义检索能力。", "priority": "P1", "priorityNote": "该项对OKR/战略门禁有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "152", "quote": "核心体验升级：语义搜索、播放优化、笔记重构、原文研究工具"}]}, {"id": "E4-S05", "title": "搜索 0 结果兜底（建议改写/译本切换/相关主题）", "desc": "当搜索无结果时给出可操作的下一步。", "platform": "App | Web", "why": "0 结果是强挫败点，容易触发放弃。", "priority": "P1", "priorityNote": "该项对核心任务完成率有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "185", "quote": "搜索无结果兜底建议 | 提升检索完成率"}]}, {"id": "E4-S06", "title": "搜索索引覆盖扩展（括号/标题/注释字段）", "desc": "把括号内容、标题/小标题、关键注释字段纳入索引。", "platform": "App | Web", "why": "属于提升找得到的长尾能力。", "priority": "P2", "priorityNote": "该项偏向长尾增强，建议在前置基础能力完成后逐步投入。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "184", "quote": "搜索索引扩展（括号/注释） | 降低0结果"}]}, {"id": "E4-S07", "title": "译本版本差异说明（和合本等）与译本选择教育", "desc": "在译本选择与阅读页增加版本差异说明。", "platform": "App | Web", "why": "用户对同名译本但文本不同高度敏感；解释不足会被误判为内容错误。", "priority": "P1", "priorityNote": "该项对信任与用户资产有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle2.md", "line": "130", "quote": "P3 | 译本/版本咨询与请求 | 252 | 7.4%"}]}, {"id": "E4-S08", "title": "全局搜索（经文/计划/资源/注释/笔记）入口与结果聚合", "desc": "提供统一搜索入口，支持跨模块对象检索与结果聚合。", "platform": "App | Web", "why": "用户按意图而非模块思考；全局搜索是基础能力。", "priority": "P1", "priorityNote": "该项对核心任务完成率有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "735", "quote": "ET08-G3 | 资源不可搜索 | P0"}]}, {"id": "E4-S09", "title": "主题索引与标签体系（主题经文入口 + 处境化浏览）", "desc": "建立可浏览的主题经文索引。", "platform": "App | Web", "why": "用户常记得大意/主题而非关键词。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "366", "quote": "ET04-G2 | 缺少主题索引或标签体系"}]}]}, {"id": "E5", "name": "视听与播放器体系（有声圣经/资源音视频）", "desc": "按通勤/睡前/低注意力场景的媒体级体验基线。", "stories": [{"id": "E5-S01", "title": "后台/锁屏播放基线补齐（iOS/Android）", "desc": "保证音频在锁屏/切后台后不中断，并提供系统级媒体控制面板。", "platform": "App | Web", "why": "通勤/家务是音频核心场景；没有后台播放等同于音频不可用。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "401", "quote": "F3 | 后台/锁屏播放 | 148 条"}]}, {"id": "E5-S02", "title": "断点续播（每个内容记住播放位置）", "desc": "对每段音频/视频独立记录进度（精确到秒），下次进入自动续播。", "platform": "App | Web", "why": "长音频的典型使用方式就是多次分段听；断点续播是连续性核心。", "priority": "P0", "priorityNote": "该项属于高频场景可用性相关的高优先级问题。", "sources": [{"file": "experience-themes-framework.md", "line": "1048", "quote": "ET09-G7 | 断点续播 | P0"}]}, {"id": "E5-S03", "title": "播放历史（最近播放/继续收听）", "desc": "提供统一的播放历史列表。", "platform": "App | Web", "why": "用户需要找回上次内容。", "priority": "P1", "priorityNote": "该项对高频场景可用性有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "1049", "quote": "ET09-G8 | 播放历史记录 | P1"}]}, {"id": "E5-S04", "title": "倍速播放（含 0.8/0.9 等细粒度）", "desc": "提供可用的倍速档位与记忆上次选择。", "platform": "App | Web", "why": "倍速是媒体级基线能力。", "priority": "P1", "priorityNote": "该项对高频场景可用性有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "414", "quote": "F1：播放倍速调节 | 价值：高"}]}, {"id": "E5-S05", "title": "自动连续播放下一章/下一集", "desc": "支持连续播放模式。", "platform": "App | Web", "why": "低注意力场景要求少操作；连播是沉浸体验的关键。", "priority": "P1", "priorityNote": "该项对高频场景可用性有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "400", "quote": "F2 | 连续/自动播放下一章 | 197 条"}]}, {"id": "E5-S06", "title": "睡眠定时（Sleep Timer）", "desc": "提供按分钟或播完本章/本集停止播放的定时能力。", "platform": "App | Web", "why": "睡前场景高频但非阻塞。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "1065", "quote": "ET09-G14 | 定时关闭（Sleep Timer）"}]}, {"id": "E5-S07", "title": "统一播放器内核（有声圣经/资源音频/祷告音频一致体验）", "desc": "收敛为统一播放器组件。", "platform": "App | Web", "why": "体验一致性减少学习成本，也降低维护成本。", "priority": "P1", "priorityNote": "该项对高频场景可用性有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "1042", "quote": "ET09-G6 | 跨内容类型的播放体验不一致"}]}, {"id": "E5-S08", "title": "音频播放错误码上报 + 首帧时延监控（SLO）", "desc": "为播放链路建立错误码、首帧时延、重试次数等埋点与看板。", "platform": "App | Web", "why": "播放是工单 Top 痛点之一；没有可观测性就无法持续改善。", "priority": "P0", "priorityNote": "该项属于高频场景可用性相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle1.md", "line": "17", "quote": "音频播放稳定性 | 4,155 | 25.32% | P0"}]}, {"id": "E5-S09", "title": "读经文本与听经位置同步（逐节高亮跟随）", "desc": "在听经时同步高亮文本位置。", "platform": "App | Web", "why": "这是信仰 App 的差异化体验，适合后置。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "1073", "quote": "ET09-G17 | 读经与听经的位置同步"}]}, {"id": "E5-S10", "title": "迷你播放器（浏览其他页面不断播）", "desc": "在全局提供可收起的迷你播放器。", "platform": "App | Web", "why": "没有迷你播放器会迫使用户在播放与浏览之间二选一。", "priority": "P1", "priorityNote": "该项对高频场景可用性有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "1040", "quote": "ET09-G4 | 迷你播放器"}]}, {"id": "E5-S11", "title": "离线下载（有声圣经/音频资源）与存储管理", "desc": "支持按卷/按计划批量下载。", "platform": "App | Web", "why": "离线是国内弱网/GFW 环境下音频可用性的关键兜底。", "priority": "P1", "priorityNote": "该项对核心链路阻塞有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "1020", "quote": "离线下载 | 未确认"}]}, {"id": "E5-S12", "title": "播放器队列/接下来播放最小实现", "desc": "支持把接下来要听的章节/资源加入队列。", "platform": "App | Web", "why": "属于提升型能力。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "1056", "quote": "ET09-G10 | 播放队列（Queue）"}]}]}, {"id": "E6", "name": "笔记体系（记录沉淀）", "desc": "让用户写得下、找得到、带得走，形成长期属灵资产。", "stories": [{"id": "E6-S01", "title": "草稿自动保存（感想/笔记/祷告长文本）", "desc": "编辑过程中自动保存草稿，意外退出/切后台不丢内容。", "platform": "App | Web", "why": "写作中断且内容丢失会造成强烈挫败，是必须修的体验底线。", "priority": "P0", "priorityNote": "该项属于OKR/战略门禁相关的高优先级问题。", "sources": [{"file": "experience-themes-framework.md", "line": "601", "quote": "ET07-G2 | 草稿不自动保存 | P0"}]}, {"id": "E6-S02", "title": "提供独立“笔记入口/我的笔记”与时间线回顾", "desc": "让不参加小组计划的用户也能记笔记。", "platform": "App | Web", "why": "笔记不应被绑定在小组计划中。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "600", "quote": "ET07-G1 | 笔记功能被绑定在小组计划中，无独立入口 | P0"}]}, {"id": "E6-S03", "title": "经文↔笔记双向链接（从经文页可找到相关笔记）", "desc": "写笔记时自动关联经文章节。", "platform": "App | Web", "why": "属灵笔记的价值来自上下文。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "603", "quote": "ET07-G4 | 笔记与经文缺乏双向链接 | P1"}]}, {"id": "E6-S04", "title": "笔记搜索与分类（按经文/日期/主题）", "desc": "提供基础搜索与标签/主题筛选。", "platform": "App | Web", "why": "当笔记积累后，找不到会让记录动机崩塌。", "priority": "P1", "priorityNote": "该项对核心任务完成率有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "604", "quote": "ET07-G5 | 笔记不支持搜索和分类 | P1"}]}, {"id": "E6-S05", "title": "富文本/Markdown 基础能力（加粗/列表/引用经文）", "desc": "补齐最小富文本能力。", "platform": "App | Web", "why": "提升表达能力，但应在自动保存/链接/搜索之后推进。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "602", "quote": "ET07-G3 | 缺乏基本的富文本能力 | P1"}]}, {"id": "E6-S06", "title": "笔记导出（PDF/文本）作为用户资产保障", "desc": "允许用户导出笔记。", "platform": "App | Web", "why": "导出权提升信任。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "1420", "quote": "数据导出权 | 用户是否能导出自己的所有数据"}]}, {"id": "E6-S07", "title": "笔记复制功能修复（跨平台剪贴板一致性）", "desc": "修复笔记复制/粘贴失败或格式异常问题。", "platform": "App | Web", "why": "复制是用户拥有自己内容的最基本能力。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "208-214", "quote": "笔记复制功能损坏"}]}, {"id": "E6-S08", "title": "笔记回收站（误删可恢复）", "desc": "提供笔记删除后的回收站与恢复能力。", "platform": "App | Web", "why": "误删不可恢复会抑制用户记录意愿。", "priority": "P1", "priorityNote": "该项对信任与用户资产有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1265", "quote": "笔记系统重构 | 回收站、知识整合、模板"}]}, {"id": "E6-S09", "title": "笔记插图（图片）灰度方案（含存储/同步成本控制）", "desc": "支持笔记插入图片。", "platform": "App | Web", "why": "价值高但成本与同步复杂度高。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "127", "quote": "笔记能力增强（图片/导入导出）"}]}]}, {"id": "E7", "name": "高亮标注（标注/颜色/跨译本）", "desc": "让用户精确标注并可跨译本使用，支撑深度研经与复习。", "stories": [{"id": "E7-S01", "title": "跨版本高亮同步（同一节不同译本可见）", "desc": "实现高亮在不同译本间的可见/映射策略。", "platform": "App | Web", "why": "高亮是长期资产；跨译本不可用会让用户不敢再沉淀。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "208-214", "quote": "跨版本高亮不同步"}]}, {"id": "E7-S02", "title": "词级别高亮与高亮颜色扩展", "desc": "支持在经文中高亮一个词/短语。", "platform": "App | Web", "why": "满足深度研经用户，但实现复杂。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle2.md", "line": "228", "quote": "F8 | 高亮功能增强"}]}]}, {"id": "E8", "name": "资源体验（发现/搜索/分类/关联/收藏/分享）", "desc": "让已上线内容可被找到、被用起来、嵌入灵修流程。", "stories": [{"id": "E8-S01", "title": "资源模块定位与信息架构决策", "desc": "明确资源在 App 中的角色。", "platform": "App | Web", "why": "没有定位，后续所有优化会变成零散补丁。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "experience-themes-framework.md", "line": "777", "quote": "ET08-G15 | 资源模块在App中的角色定位不清 | P0（战略级）"}]}, {"id": "E8-S02", "title": "资源可搜索（关键词+作者+经文关联）MVP", "desc": "为资源内容提供基础搜索与筛选。", "platform": "App | Web", "why": "有宝藏但找不到会让资源投入无效。", "priority": "P0", "priorityNote": "该项属于核心任务完成率相关的高优先级问题。", "sources": [{"file": "experience-themes-framework.md", "line": "735", "quote": "ET08-G3 | 资源不可搜索 | P0"}]}, {"id": "E8-S03", "title": "资源主题索引/分类体系（主题/处境/类型/深度）", "desc": "建立最小可用的多维分类。", "platform": "App | Web", "why": "分类是长期可扩展的发现骨架。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "experience-themes-framework.md", "line": "736", "quote": "ET08-G4 | 缺少主题索引/分类体系 | P0"}]}, {"id": "E8-S04", "title": "内容元数据补齐（作者/机构/时长/摘要/适合人群/相关经文）", "desc": "为每条资源建立结构化元数据。", "platform": "App | Web", "why": "没有元数据就无法做高质量发现。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "experience-themes-framework.md", "line": "646-650", "quote": "ET-08 使用资源"}]}, {"id": "E8-S05", "title": "经文页的相关资源入口（上下文关联发现）", "desc": "在阅读经文页面以低干扰方式提供相关资源入口。", "platform": "App | Web", "why": "资源必须嵌入灵修流程才会被用起来。", "priority": "P1", "priorityNote": "该项对OKR/战略门禁有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "729", "quote": "ET08-G2 | 资源与灵修行为脱节 | P0"}]}, {"id": "E8-S06", "title": "资源收藏 + 浏览/收听历史", "desc": "支持资源收藏与历史。", "platform": "App | Web", "why": "收藏与历史是基本需求。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "763", "quote": "ET08-G11 | 缺少收藏/保存机制 | P1"}]}, {"id": "E8-S07", "title": "资源详情页的价值预览（摘要/试听/预计时长）", "desc": "为资源提供可快速判断的预览机制。", "platform": "App | Web", "why": "缺少预览会导致决策成本过高。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "743", "quote": "ET08-G6 | 缺少帮助用户判断内容价值的信号 | P1"}]}, {"id": "E8-S08", "title": "资源分享到小组（附推荐理由）", "desc": "在资源页提供一键分享到小组。", "platform": "App | Web", "why": "信仰内容分发最有效的是关系推荐。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "770", "quote": "ET08-G13 | 资源无法分享到小组 | P1"}]}, {"id": "E8-S09", "title": "首页资源露出：继续阅读/收听 + 今日灵修精选", "desc": "在首页以邀请式方式露出资源。", "platform": "App | Web", "why": "资源存在感不足是 P0 断点。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "728", "quote": "ET08-G1 | 资源在App中的存在感极低 | P0"}]}, {"id": "E8-S10", "title": "编辑策展机制（本月精选/入门必读/查经材料包）", "desc": "建立内容团队可配置的策展位与专题页。", "platform": "App | Web", "why": "策展是可控的信任机制。", "priority": "P1", "priorityNote": "该项对信任与用户资产有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "799", "quote": "RightNow Media | 教会定制推荐列表"}]}, {"id": "E8-S11", "title": "资源与计划联动：计划页面展示配套资源入口", "desc": "为读经计划提供配套资源入口。", "platform": "App | Web", "why": "计划是高频入口。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "251", "quote": "S3-1 | 快速开始今天的读经计划"}]}, {"id": "E8-S12", "title": "资源外部分享卡片（微信/社交平台回流）", "desc": "为资源生成可分享卡片与链接。", "platform": "App | Web", "why": "外部分享是自然增长渠道。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "experience-themes-framework.md", "line": "771", "quote": "ET08-G14 | 资源无法分享到外部 | P2"}]}]}, {"id": "E9", "name": "Web/PWA/平板与跨端连续性", "desc": "Web不再是阉割版；PWA用于政策韧性与获客；平板用于深度研经。", "stories": [{"id": "E9-S01", "title": "Web 端桌面布局重构（窄列→响应式多栏）", "desc": "修复 Web/Desktop 固定窄列与断点策略。", "platform": "Web", "why": "Web 是分享落地与政策韧性关键入口。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "208-214", "quote": "桌面/网页端布局问题"}]}, {"id": "E9-S02", "title": "PWA 基础设施就绪（HTTPS + Manifest + Service Worker）", "desc": "补齐可安装性与离线缓存基础。", "platform": "Web", "why": "PWA 是 App 不可用地区的生命线。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "platform-experience-analysis.md", "line": "164-168", "quote": "PWA关键技术要求"}]}, {"id": "E9-S03", "title": "经文文本默认离线可用（PWA/移动端）", "desc": "使核心经文文本在离线时仍可阅读。", "platform": "Web", "why": "离线是圣经 App 的刚需。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "1464", "quote": "离线重要性分析：刚需而非nice-to-have"}]}, {"id": "E9-S04", "title": "Web 分享落地页体验（未登录可读 + 引导安装）", "desc": "从微信/社交链接进入时先展示目标内容。", "platform": "Web", "why": "分享落地是获客与回流的第一印象。", "priority": "P0", "priorityNote": "该项属于新增入口可达性相关的高优先级问题。", "sources": [{"file": "platform-experience-analysis.md", "line": "301-305", "quote": "ET-W1 分享落地体验"}]}, {"id": "E9-S05", "title": "SEO/LLMO：公开内容策略与结构化数据", "desc": "定义哪些页面可被索引，并添加结构化数据。", "platform": "Web", "why": "低边际成本的长期增长杠杆。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "326-330", "quote": "ET-W2 SEO与公开内容策略"}]}, {"id": "E9-S06", "title": "平板横屏与大屏布局 MVP", "desc": "在平板上提供横屏可用与基本分栏布局。", "platform": "App | Web", "why": "平板是深度学习与投屏查经的重要设备。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "218-222", "quote": "平板适配策略"}]}, {"id": "E9-S07", "title": "Web 全局搜索（经文/资源/计划）", "desc": "在 Web 提供全局搜索入口与结果聚合。", "platform": "Web", "why": "Web 必须具备完成核心任务的能力。", "priority": "P1", "priorityNote": "该项对OKR/战略门禁有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wdbible-plan-raw.md", "line": "33", "quote": "实现全局搜索功能"}]}, {"id": "E9-S08", "title": "投屏/展示模式（大字、高对比度、隐藏隐私信息）", "desc": "为教会投屏场景提供展示模式。", "platform": "App | Web", "why": "典型平板投屏场景。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "wdbible-plan-raw.md", "line": "29", "quote": "打造满意度超过95%的投屏体验"}]}, {"id": "E9-S09", "title": "PWA 安装引导", "desc": "在用户完成关键价值行为后提示安装 PWA。", "platform": "Web", "why": "过早弹窗会打断首次体验。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "platform-experience-analysis.md", "line": "366-371", "quote": "ET-W4 PWA安装与更新引导"}]}, {"id": "E9-S10", "title": "跨端连续性：统一 URL 深链接策略", "desc": "定义稳定的 URL 结构。", "platform": "Web", "why": "跨端连续性与分享落地是增长与留存的隐形基础设施。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "346-350", "quote": "ET-W3 跨平台连续性"}]}, {"id": "E9-S11", "title": "Web/PWA Phase 0 基线盘点", "desc": "完成Web/PWA现状基线盘点。", "platform": "Web", "why": "没有基线就无法对齐目标。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "platform-experience-analysis.md", "line": "108-112", "quote": "Web与App的功能对齐差距"}]}, {"id": "E9-S12", "title": "Web核心功能对齐至80%", "desc": "把Web端核心任务链路补齐到可独立完成。", "platform": "Web", "why": "Web是政策韧性与获客入口。", "priority": "P0", "priorityNote": "该项属于核心任务完成率相关的高优先级问题。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1584-1587", "quote": "核心功能覆盖 | 功能对等"}]}, {"id": "E9-S13", "title": "Web效率优势强化（键盘快捷键/多窗口/复制打印）", "desc": "补齐键盘快捷键等效率能力。", "platform": "Web", "why": "Web的天然优势在大屏与键盘效率。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "75-79", "quote": "Web的独特优势"}]}, {"id": "E9-S14", "title": "PWA能力建设（Web Push/后台同步/离线优先/更新策略）", "desc": "补齐关键能力。", "platform": "Web", "why": "PWA是下架风险与弱网环境的生命线。", "priority": "P1", "priorityNote": "该项对核心链路阻塞有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "366-370", "quote": "ET-W4 PWA安装与更新引导"}]}, {"id": "E9-S15", "title": "Web 中小尺寸屏幕与导航信息架构优化", "desc": "优化 Web 的响应式断点与导航结构。", "platform": "Web", "why": "在中小屏设备上能打开但用不了会直接造成流失。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "123", "quote": "导航结构 | 信息架构是否与App一致"}]}]}, {"id": "E10", "name": "付费/奉献闭环（圣经App范围）", "desc": "把想奉献/想购买的意愿变成可完成的路径，并降低支付失败与客诉。", "stories": [{"id": "E10-S01", "title": "大辞典购买导流页（App 内一键跳转书城商品页）", "desc": "在辞典入口新增明确引导页与 CTA。", "platform": "App | Web", "why": "大辞典是最大噪声奇点。", "priority": "P0", "priorityNote": "该项属于收入与转化相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle1.md", "line": "74-77", "quote": "大辞典噪声奇点——App内无法直接提供购买链接"}]}, {"id": "E10-S02", "title": "PayPal 重复奉献失败修复（循环奉献）", "desc": "修复 PayPal 循环奉献失败的关键缺陷。", "platform": "App | Web", "why": "循环奉献失败会直接损失收入与信任。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "310-316", "quote": "KR4.3: 全渠道支付成功率达≥95%"}]}, {"id": "E10-S03", "title": "全渠道支付成功率监控与失败自助指引", "desc": "建立支付成功率监控。", "platform": "App | Web", "why": "支付链路的本质是把意愿变成完成。", "priority": "P1", "priorityNote": "该项对核心链路阻塞有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "310-316", "quote": "KR4.3 | 全渠道支付成功率 | ≥95%"}]}, {"id": "E10-S04", "title": "国内奉献/支付方式可行性评估（微信/支付宝）", "desc": "产出合规与技术可行性评估。", "platform": "App | Web", "why": "反馈明确存在真实需求，但合规与实现成本不确定。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "408", "quote": "F10 | 奉献支付方式（微信/支付宝）"}]}, {"id": "E10-S05", "title": "圣经↔书城深度链接与统一账号权益同步", "desc": "在经文阅读场景提供相关书籍跳转入口。", "platform": "App | Web", "why": "生态整合是战略明确方向。", "priority": "P1", "priorityNote": "该项对信任与用户资产有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wdbook-plan-raw.md", "line": "6", "quote": "与微读圣经的整合"}]}, {"id": "E10-S06", "title": "购买回流权益检查 + 一键刷新 + FAQ", "desc": "购买/奉献后回流App提供统一的权益检查页。", "platform": "App | Web", "why": "买了没到账是高频工单。", "priority": "P0", "priorityNote": "该项属于信任与用户资产相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "211-213", "quote": "回流后增加权益到账检查 + 一键刷新按钮"}]}, {"id": "E10-S07", "title": "支付成功率≥95%专项（漏斗监控 + Top失败原因清零）", "desc": "建立支付漏斗监控与失败分布。", "platform": "App | Web", "why": "KR4.3是收入护栏关键指标。", "priority": "P0", "priorityNote": "该项属于OKR/战略门禁相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "310-316", "quote": "KR4.3 | 全渠道支付成功率 | ≥95%"}]}, {"id": "E10-S08", "title": "本地支付接入与奉献体验优化（支付宝等 + 循环奉献）", "desc": "接入区域常用支付方式。", "platform": "App | Web", "why": "支付方式不匹配会造成有意愿但无法完成。", "priority": "P1", "priorityNote": "该项对收入与转化有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1596-1599", "quote": "支持支付宝 | 高 | 接入支付宝接口"}]}]}, {"id": "E11", "name": "体验可观测（客户端关键链路SLO/看板）", "desc": "把搜索/同步/播放等关键链路状态量化可见。", "stories": [{"id": "E11-S01", "title": "搜索质量看板（0 结果率/延迟/成功率）", "desc": "补齐搜索请求日志与核心指标看板。", "platform": "App | Web", "why": "搜索优化必须可量化。", "priority": "P1", "priorityNote": "该项对OKR/战略门禁有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "188", "quote": "搜索成功率 | ≥80% | 每日"}]}, {"id": "E11-S02", "title": "播放 SLO：成功率/首帧/中断率 的周度回归集", "desc": "把播放链路的关键指标固化为 SLO。", "platform": "App | Web", "why": "播放是长期顽疾；需要工程化防复发。", "priority": "P0", "priorityNote": "该项属于高频场景可用性相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle1.md", "line": "17", "quote": "音频播放稳定性 | 4,155 | 25.32% | P0"}]}, {"id": "E11-S03", "title": "同步可观测：同步事件/冲突类型/恢复成功率", "desc": "对同步链路埋点。", "platform": "App | Web", "why": "同步问题的修复高度依赖事实数据。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "236-238", "quote": "同步链路：sync_status、conflict_type、recovery_result"}]}]}, {"id": "E12", "name": "用户行为观察与实验（归因/漏斗/AB 测试）", "desc": "用可用的归因、漏斗与实验框架验证留存/转化假设。", "stories": [{"id": "E12-S01", "title": "渠道归因与新增漏斗", "desc": "补齐渠道归因与分渠道 D7/留存数据。", "platform": "App | Web", "why": "没有归因就无法判断哪些渠道带来高留存用户。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "341", "quote": "渠道归因数据 | 建立基线"}]}, {"id": "E12-S02", "title": "A/B 测试基础设施（分流/指标口径/止损回滚）", "desc": "建立可复用的实验框架。", "platform": "App | Web", "why": "首周留存工程需要用实验验证假设。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "150", "quote": "首周留存工程 + A/B测试"}]}, {"id": "E12-S03", "title": "全链路埋点审计", "desc": "对核心链路埋点做覆盖审计与口径对齐。", "platform": "App | Web", "why": "没有可信数据就无法做留存工程与门禁验收。", "priority": "P0", "priorityNote": "该项属于OKR/战略门禁相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "462-464", "quote": "O2 | 数据基线建立（3/20硬性里程碑）"}]}, {"id": "E12-S04", "title": "数据基线建立与埋点验收（3/20里程碑）", "desc": "建立核心指标的可用基线与看板。", "platform": "App | Web", "why": "OKR明确把数据基线作为硬性里程碑。", "priority": "P0", "priorityNote": "该项属于OKR/战略门禁相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "467-474", "quote": "Q1 数据基线建立（硬性里程碑：3月20日）"}]}, {"id": "E12-S05", "title": "首周留存实验：Onboarding/启动页实验模板与首轮复盘", "desc": "产出可复用的实验模板并完成首轮复盘。", "platform": "App | Web", "why": "没有实验模板与复盘机制就无法形成可复制的增长迭代节奏。", "priority": "P0", "priorityNote": "该项属于OKR/战略门禁相关的高优先级问题。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "251", "quote": "Q1 | 引导流程A/B验证"}]}]}, {"id": "E13", "name": "用户反馈闭环（反馈处理/自助排障）", "desc": "把反馈收得住、分得清、回得去，并用FAQ/错误码/诊断引导降低重复工单。", "stories": [{"id": "E13-S01", "title": "用户反馈闭环机制：分类→归因→修复→回访", "desc": "建立反馈自动分类标签、SLA 与回访机制。", "platform": "App | Web", "why": "反馈反复出现的根因是看见但不闭环。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "154", "quote": "KR2.5 | P0≤24h响应 + 解决率≥80%"}]}, {"id": "E13-S02", "title": "App 内 FAQ/自助排障中心（覆盖 Top 10 工单）", "desc": "把高频问题做成可离线访问的 FAQ。", "platform": "App | Web", "why": "大量问题可被解释+指引显著降噪。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle1.md", "line": "560", "quote": "FAQ / 自助排障页面 | Top 10 问题"}]}, {"id": "E13-S03", "title": "全局字号/行距/对比度统一", "desc": "统一阅读相关设置在全模块生效。", "platform": "App | Web", "why": "字体与可访问性反馈稳定存在。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle1.md", "line": "20", "quote": "字体与可访问性 | 583 | 3.55% | P1"}]}, {"id": "E13-S04", "title": "无障碍基线补齐（VoiceOver/动态字体/高对比模式）", "desc": "补齐屏幕阅读、动态字体与高对比模式支持。", "platform": "App | Web", "why": "无障碍是体验底座。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wdbible-plan-raw.md", "line": "16", "quote": "无障碍设计：VoiceOver，动态字体，高对比度"}]}, {"id": "E13-S05", "title": "麦琴读经计划数据纠错（365天章节划分全量审查）", "desc": "对麦琴读经计划365天数据做全量校对与修正。", "platform": "App | Web", "why": "内容错误会直接破坏计划可信度。", "priority": "P0", "priorityNote": "该项属于体验与留存相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-opus-circle2.md", "line": "178-179", "quote": "麦琴读经计划内容错误集中爆发"}]}, {"id": "E13-S06", "title": "内容质量治理：勘误入口 + SLA + 发布校验", "desc": "建立用户可用的勘误入口与处理SLA。", "platform": "App | Web", "why": "内容是信任资产。", "priority": "P0", "priorityNote": "该项属于信任与用户资产相关的高优先级问题。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "86", "quote": "内容准确性 | 勘误闭环与发布节奏脱节"}]}, {"id": "E13-S07", "title": "播放/下载失败错误码展示与诊断引导", "desc": "在关键错误上展示可读错误码与诊断引导。", "platform": "App | Web", "why": "错误码是规模化定位与自助排障的最小单位。", "priority": "P1", "priorityNote": "该项对高频场景可用性有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "analysis-admin-feedbacks-codex-circle2.md", "line": "176", "quote": "错误码体系 | 缩短定位时长"}]}]}, {"id": "E14", "name": "国际化与本地化体验（Ilumine/繁体/多语言/RTL）", "desc": "把语言可用升级为处境可用，形成可复制的国际化交付能力。", "stories": [{"id": "E14-S01", "title": "Ilumine（巴西）发布质量门禁", "desc": "对巴西版核心路径做可用性核查。", "platform": "App | Web", "why": "国际化的第一枪必须打稳。", "priority": "P0", "priorityNote": "该项属于OKR/战略门禁相关的高优先级问题。", "sources": [{"file": "wd-2026-okr-v6.0.md", "line": "309-316", "quote": "Ilumine巴西Q2发布"}]}, {"id": "E14-S02", "title": "繁体中文市场可用性专项（搜索+本地化体验细节）", "desc": "以繁体用户任务为线索梳理 P0 阻塞点。", "platform": "App | Web", "why": "繁体用户是核心群体之一。", "priority": "P0", "priorityNote": "该项属于核心链路阻塞相关的高优先级问题。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1609-1612", "quote": "持续优化繁体用户体验"}]}, {"id": "E14-S03", "title": "国际化设计系统与格式规范", "desc": "统一多语言排版规则与本地习惯。", "platform": "App | Web", "why": "设计系统不统一会造成体验损失。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wdbible-plan-raw.md", "line": "25", "quote": "国际化：改进设计系统"}]}, {"id": "E14-S04", "title": "RTL（从架构层预留与可用性验证）", "desc": "评估并预留 RTL 支持的关键技术点。", "platform": "App | Web", "why": "属于中长期市场拓展准备。", "priority": "P2", "priorityNote": "该项偏向长尾增强。", "sources": [{"file": "wdbible-plan-raw.md", "line": "6", "quote": "国际化深化：RTL 支持"}]}]}, {"id": "E15", "name": "研读与理解圣经（注释/交叉引用/原文工具）", "desc": "为深度研经提供可信赖的理解工具与高效率工作台。", "stories": [{"id": "E15-S01", "title": "原文研究工具修复与增强（词汇解析/形态/对照）", "desc": "修复并增强希伯来/希腊文研经工具。", "platform": "App | Web", "why": "研经用户对原文工具高度敏感。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "wd-2026-strategy-plan-v4.5.md", "line": "1266", "quote": "原文研究工具 | 服务研经用户"}]}, {"id": "E15-S02", "title": "注释增强与交叉引用优化（阅读页一键看注释）", "desc": "优化注释书整合与交叉引用展示。", "platform": "App | Web", "why": "理解工具缺乏联动是P1断点。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "experience-themes-framework.md", "line": "442-443", "quote": "ET05-G1 | 理解工具之间缺乏联动 | P1"}]}, {"id": "E15-S03", "title": "研读工作台（三栏）：经文 + 注释/原文 + 笔记并排", "desc": "在大屏形态提供研读三栏工作台。", "platform": "App | Web", "why": "大屏的核心价值是并排阅读与高效输入。", "priority": "P1", "priorityNote": "该项对体验与留存有显著提升，适合在P0问题清零后推进。", "sources": [{"file": "platform-experience-analysis.md", "line": "82", "quote": "键盘输入 | 长文本输入效率远高于触屏"}]}]}];
+
+// ── Annotation data (loaded from workplan-annotations.js) ──
+const _a = (typeof ANNOTATIONS !== 'undefined') ? ANNOTATIONS : {};
+const TAGS = Object.assign({}, _a.tags);
+const LINKS = Object.assign({}, _a.links);
+const NOTES = Object.assign({}, _a.notes);
+
+// ── Auto-persist to localStorage (immediate) + JS file (for sharing) ──
+const _LS_KEY = 'workplan-annotations';
+const _GH_CFG_KEY = 'workplan-github-sync-v1';
+const _GH_DEFAULTS = Object.freeze({
+  enabled: true,
+  owner: 'lukeatwd',
+  repo: 'epic-board',
+  branch: 'main',
+  path: 'Planning/workplan-annotations.js',
+  token: '',
+});
+let ghCfg = _loadGithubCfg();
+let ghKnownSha = null;
+let ghSaveTimer = null;
+let ghSyncInFlight = false;
+let ghSyncQueued = false;
+let ghLastSavedBody = '';
+
+function _inferGithubFromLocation(cfg) {
+  const host = location.hostname || '';
+  if (!host.endsWith('.github.io')) return cfg;
+  const owner = host.slice(0, -10);
+  const pathParts = location.pathname.split('/').filter(Boolean);
+  const repo = pathParts.length ? pathParts[0] : `${owner}.github.io`;
+  return {
+    ...cfg,
+    owner: cfg.owner || owner,
+    repo: cfg.repo || repo,
+  };
+}
+
+function _loadGithubCfg() {
+  try {
+    const raw = localStorage.getItem(_GH_CFG_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    const merged = { ..._GH_DEFAULTS, ...(parsed || {}) };
+    merged.enabled = true;
+    return _inferGithubFromLocation(merged);
+  } catch (e) {
+    const fallback = { ..._GH_DEFAULTS };
+    fallback.enabled = true;
+    return _inferGithubFromLocation(fallback);
+  }
+}
+
+function _saveGithubCfg() {
+  try { localStorage.setItem(_GH_CFG_KEY, JSON.stringify(ghCfg)); } catch (e) {}
+}
+
+function _getGithubRef(cfg) {
+  return `${cfg.owner}/${cfg.repo}@${cfg.branch}:${cfg.path}`;
+}
+
+function _readGithubConfigFromInputs(base = ghCfg) {
+  const enabledEl = document.getElementById('ghEnabled');
+  const ownerEl = document.getElementById('ghOwner');
+  const repoEl = document.getElementById('ghRepo');
+  const branchEl = document.getElementById('ghBranch');
+  const pathEl = document.getElementById('ghPath');
+  const tokenEl = document.getElementById('ghToken');
+  return {
+    enabled: enabledEl ? !!enabledEl.checked : !!base.enabled,
+    owner: ownerEl ? (ownerEl.value || '').trim() : (base.owner || ''),
+    repo: repoEl ? (repoEl.value || '').trim() : (base.repo || ''),
+    branch: branchEl ? ((branchEl.value || '').trim() || 'main') : (base.branch || 'main'),
+    path: pathEl ? ((pathEl.value || '').trim() || 'Planning/workplan-annotations.js') : (base.path || 'Planning/workplan-annotations.js'),
+    token: tokenEl ? (tokenEl.value || '').trim() : (base.token || ''),
+  };
+}
+
+function applyGithubConfigToInputs() {
+  const owner = document.getElementById('ghOwner');
+  const repo = document.getElementById('ghRepo');
+  const branch = document.getElementById('ghBranch');
+  const path = document.getElementById('ghPath');
+  const token = document.getElementById('ghToken');
+  const enabled = document.getElementById('ghEnabled');
+  if (owner) owner.value = ghCfg.owner || '';
+  if (repo) repo.value = ghCfg.repo || '';
+  if (branch) branch.value = ghCfg.branch || 'main';
+  if (path) path.value = ghCfg.path || 'Planning/workplan-annotations.js';
+  if (token) token.value = ghCfg.token || '';
+  if (enabled) enabled.checked = !!ghCfg.enabled;
+}
+
+function _syncGithubCfgFromInputs() {
+  const before = _getGithubRef(ghCfg);
+  ghCfg = _readGithubConfigFromInputs();
+  const after = _getGithubRef(ghCfg);
+  if (before !== after) ghKnownSha = null;
+  _saveGithubCfg();
+}
+
+function _setGithubStatus(text, tone = '') {
+  const el = document.getElementById('ghStatus');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove('ok', 'err');
+  if (tone) el.classList.add(tone);
+}
+
+function toggleGithubPanel() {
+  const panel = document.getElementById('githubPanel');
+  if (!panel) return;
+  panel.classList.toggle('open');
+  applyGithubConfigToInputs();
+}
+
+function saveGithubConfig() {
+  _syncGithubCfgFromInputs();
+  if (ghCfg.enabled) {
+    _setGithubStatus('配置已保存，自动保存已启用。', 'ok');
+    if (dirty) scheduleGitHubSave();
+  } else {
+    _setGithubStatus('配置已保存，自动保存未启用。');
+  }
+}
+
+function clearGithubToken() {
+  const tokenEl = document.getElementById('ghToken');
+  if (tokenEl) tokenEl.value = '';
+  _syncGithubCfgFromInputs();
+  _setGithubStatus('Token 已清除。');
+}
+
+function _validateGithubCfg(forWrite) {
+  const missing = [];
+  if (!ghCfg.owner) missing.push('Owner');
+  if (!ghCfg.repo) missing.push('Repo');
+  if (!ghCfg.branch) missing.push('Branch');
+  if (!ghCfg.path) missing.push('File Path');
+  if (forWrite && !ghCfg.token) missing.push('Token');
+  return missing;
+}
+
+function _encodeGithubPath(path) {
+  return path.split('/').map(s => encodeURIComponent(s)).join('/');
+}
+
+function _githubContentUrl() {
+  const encodedPath = _encodeGithubPath(ghCfg.path);
+  return `https://api.github.com/repos/${encodeURIComponent(ghCfg.owner)}/${encodeURIComponent(ghCfg.repo)}/contents/${encodedPath}`;
+}
+
+function _githubGetUrl() {
+  return `${_githubContentUrl()}?ref=${encodeURIComponent(ghCfg.branch)}`;
+}
+
+function _githubHeaders(useAuth) {
+  const h = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+  if (useAuth && ghCfg.token) h.Authorization = `Bearer ${ghCfg.token}`;
+  return h;
+}
+
+function _utf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 1) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+function _base64ToUtf8(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+async function _fetchRemoteFile() {
+  const res = await fetch(_githubGetUrl(), { headers: _githubHeaders(true) });
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    const msg = (await res.text()).slice(0, 200);
+    throw new Error(`读取失败 (${res.status}) ${msg}`);
+  }
+  const payload = await res.json();
+  const raw = (payload.content || '').replace(/\n/g, '');
+  return {
+    sha: payload.sha || null,
+    content: raw ? _base64ToUtf8(raw) : '',
+  };
+}
+
+function _parseAnnotationsData(content) {
+  const trimmed = (content || '').trim();
+  if (!trimmed) return { version: 1, tags: {}, links: {}, notes: {} };
+  if (trimmed.startsWith('{')) return JSON.parse(trimmed);
+  const marker = 'const ANNOTATIONS =';
+  const mIdx = trimmed.indexOf(marker);
+  if (mIdx < 0) throw new Error('远端文件格式无法识别：未找到 ANNOTATIONS 常量。');
+  const open = trimmed.indexOf('{', mIdx);
+  const close = trimmed.lastIndexOf('};');
+  const end = close >= 0 ? close + 1 : trimmed.lastIndexOf('}') + 1;
+  if (open < 0 || end <= open) throw new Error('远端文件格式无法识别：JSON 结构无效。');
+  return JSON.parse(trimmed.slice(open, end));
+}
+
+function _replaceRecord(target, next) {
+  Object.keys(target).forEach(k => delete target[k]);
+  if (next && typeof next === 'object') Object.assign(target, next);
+}
+
+function _clearDirtyState() {
+  dirty = false;
+  document.getElementById('saveBtn')?.classList.remove('dirty');
+  document.getElementById('unsavedBanner')?.classList.remove('show');
+}
+
+// Merge localStorage data on top of JS file data (localStorage is newer)
+try {
+  const raw = localStorage.getItem(_LS_KEY);
+  if (raw) {
+    const ls = JSON.parse(raw);
+    if (ls.tags) Object.assign(TAGS, ls.tags);
+    if (ls.links) Object.assign(LINKS, ls.links);
+    if (ls.notes) Object.assign(NOTES, ls.notes);
+  }
+} catch(e) {}
+// Clean up legacy keys
+try { ['workplan-v5-tags','workplan-v5-links','workplan-v5-notes'].forEach(k => localStorage.removeItem(k)); } catch(e) {}
+try { if (window.name) window.name = ''; } catch(e) {}
+
+function _saveToLS() {
+  try { localStorage.setItem(_LS_KEY, JSON.stringify({ tags: TAGS, links: LINKS, notes: NOTES })); } catch(e) {}
+}
+
+function _buildData() {
+  return { version: 1, tags: TAGS, links: LINKS, notes: NOTES };
+}
+
+function _buildJS() {
+  const data = _buildData();
+  return '// 标注数据文件 — 与 experience-squad-work-plan-viewer.html 配合使用\n'
+    + 'const ANNOTATIONS = ' + JSON.stringify(data, null, 2) + ';\n';
+}
+
+function exportToFile() {
+  const blob = new Blob([_buildJS()], { type: 'application/javascript;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'workplan-annotations.js';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  _clearDirtyState();
+}
+
+function handleSaveBtn() { exportToFile(); }
+
+function persistTags() { _saveToLS(); }
+function persistLinks() { _saveToLS(); }
+function persistNotes() { _saveToLS(); }
+
+function _applyAnnotationsData(data) {
+  _replaceRecord(TAGS, data.tags);
+  _replaceRecord(LINKS, data.links);
+  _replaceRecord(NOTES, data.notes);
+  _saveToLS();
+  _clearDirtyState();
+  if (currentEpic) renderDetail(currentEpic);
+}
+
+async function pullFromGitHub(options = {}) {
+  const silent = !!options.silent;
+  _syncGithubCfgFromInputs();
+  const missing = _validateGithubCfg(false);
+  if (missing.length) {
+    if (!silent) _setGithubStatus(`配置不完整：${missing.join('、')}`, 'err');
+    return false;
+  }
+  if (!silent) _setGithubStatus('正在拉取 GitHub 数据...');
+  try {
+    const remote = await _fetchRemoteFile();
+    if (!remote) {
+      if (!silent) _setGithubStatus('远端文件不存在，首次同步会自动创建。');
+      return false;
+    }
+    ghKnownSha = remote.sha;
+    _applyAnnotationsData(_parseAnnotationsData(remote.content));
+    ghLastSavedBody = _buildJS();
+    _setGithubStatus(`已拉取 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`, 'ok');
+    return true;
+  } catch (e) {
+    if (!silent) _setGithubStatus(e.message || '拉取失败。', 'err');
+    return false;
+  }
+}
+
+function scheduleGitHubSave() {
+  if (!ghCfg.enabled) return;
+  const missing = _validateGithubCfg(true);
+  if (missing.length) {
+    _setGithubStatus(`自动保存未执行：缺少 ${missing.join('、')}`, 'err');
+    return;
+  }
+  if (ghSaveTimer) clearTimeout(ghSaveTimer);
+  ghSaveTimer = setTimeout(() => pushToGitHub('auto'), 3000);
+  _setGithubStatus('检测到改动，3 秒后自动同步...');
+}
+
+async function pushToGitHub(mode = 'manual') {
+  if (mode !== 'auto') _syncGithubCfgFromInputs();
+  if (!ghCfg.enabled && mode === 'auto') return;
+  const missing = _validateGithubCfg(true);
+  if (missing.length) {
+    if (mode !== 'auto') _setGithubStatus(`配置不完整：${missing.join('、')}`, 'err');
+    return;
+  }
+  const content = _buildJS();
+  if (mode === 'auto' && content === ghLastSavedBody) return;
+  if (ghSyncInFlight) {
+    ghSyncQueued = true;
+    if (mode !== 'auto') _setGithubStatus('已有同步任务在执行，已加入队列。');
+    return;
+  }
+  ghSyncInFlight = true;
+  if (ghSaveTimer) {
+    clearTimeout(ghSaveTimer);
+    ghSaveTimer = null;
+  }
+  _setGithubStatus(mode === 'auto' ? '自动同步中...' : '正在同步到 GitHub...');
+
+  const url = _githubContentUrl();
+  const body = {
+    message: `chore: sync workplan annotations (${new Date().toISOString()})`,
+    content: _utf8ToBase64(content),
+    branch: ghCfg.branch,
+  };
+  if (ghKnownSha) body.sha = ghKnownSha;
+
+  try {
+    const doPut = async (payload) => fetch(url, {
+      method: 'PUT',
+      headers: {
+        ..._githubHeaders(true),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    let res = await doPut(body);
+    if (res.status === 409 || res.status === 422) {
+      const remote = await _fetchRemoteFile();
+      body.sha = remote ? remote.sha : undefined;
+      res = await doPut(body);
+    }
+    if (!res.ok) {
+      const msg = (await res.text()).slice(0, 200);
+      throw new Error(`写入失败 (${res.status}) ${msg}`);
+    }
+    const payload = await res.json();
+    ghKnownSha = payload?.content?.sha || ghKnownSha;
+    ghLastSavedBody = content;
+    _clearDirtyState();
+    _setGithubStatus(`已同步 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`, 'ok');
+  } catch (e) {
+    _setGithubStatus(e.message || '同步失败。', 'err');
+  } finally {
+    ghSyncInFlight = false;
+    if (ghSyncQueued) {
+      ghSyncQueued = false;
+      scheduleGitHubSave();
+    }
+  }
+}
+
+const TAG_OPTIONS = [
+  { key: 'confirmed', label: '需求明确' },
+  { key: 'pending',   label: '需求待确认' },
+  { key: 'weak',      label: '弱需求' },
+  { key: 'missing',   label: '需求不存在' },
+];
+const TAG_LABEL = { confirmed: '需求明确', pending: '需求待确认', weak: '弱需求', missing: '需求不存在' };
+
+// ── Helpers ──
+function countByPriority(stories, p) { return stories.filter(s => s.priority === p).length; }
+function allStories() { return EPICS.flatMap(e => e.stories); }
+function getPriorityClass(p) { return p === 'P0' ? 'badge-p0' : p === 'P1' ? 'badge-p1' : 'badge-p2'; }
+function getPlatforms(p) {
+  if (p.includes('App') && p.includes('Web')) return ['App','Web'];
+  if (p.includes('App')) return ['App'];
+  return ['Web'];
+}
+function getTag(storyId) { return TAGS[storyId] || null; }
+function getLink(storyId) { return LINKS[storyId] || null; }
+function getNote(storyId) { return NOTES[storyId] || null; }
+
+// ── State ──
+let currentView = 'overview';
+let currentEpic = null;
+let filterPriority = '全部';
+let filterPlatform = '全部';
+let filterTag = '全部';
+let dirty = false;
+function markDirty() {
+  dirty = true;
+  document.getElementById('saveBtn')?.classList.add('dirty');
+  document.getElementById('unsavedBanner')?.classList.add('show');
+  scheduleGitHubSave();
+}
+
+// ── Render Overview ──
+function renderOverview() {
+  const all = allStories();
+  const p0 = countByPriority(all,'P0'), p1 = countByPriority(all,'P1'), p2 = countByPriority(all,'P2');
+  const appOnly = all.filter(s => s.platform.includes('App')).length;
+  const webOnly = all.filter(s => s.platform === 'Web').length;
+  const both = all.filter(s => s.platform.includes('App') && s.platform.includes('Web')).length;
+
+  let html = `
+    <div class="stats-bar fade-in">
+      <div class="stat-card"><span class="stat-label">总 Story 数</span><span class="stat-value">${all.length}</span></div>
+      <div class="stat-card"><span class="stat-label" style="color:hsl(0 72% 42%)">P0 阻塞/门禁</span><span class="stat-value" style="color:hsl(0 84% 60%)">${p0}</span></div>
+      <div class="stat-card"><span class="stat-label" style="color:hsl(32 80% 32%)">P1 显著提升</span><span class="stat-value" style="color:hsl(38 92% 50%)">${p1}</span></div>
+      <div class="stat-card"><span class="stat-label" style="color:hsl(221 70% 40%)">P2 中长期</span><span class="stat-value" style="color:hsl(221 83% 53%)">${p2}</span></div>
+      <div class="stat-card"><span class="stat-label">涉及 App</span><span class="stat-value">${appOnly}</span></div>
+      <div class="stat-card"><span class="stat-label">仅 Web</span><span class="stat-value">${webOnly}</span></div>
+    </div>
+    <h2 class="section-title">Epic 列表（${EPICS.length} 个主题战场）</h2>
+    <div class="epic-grid fade-in">`;
+
+  EPICS.forEach(e => {
+    const sp0 = countByPriority(e.stories,'P0'), sp1 = countByPriority(e.stories,'P1'), sp2 = countByPriority(e.stories,'P2');
+    html += `
+      <div class="epic-card" onclick="navigateToEpic('${e.id}')">
+        <div class="epic-card-header">
+          <span class="epic-id">${e.id}</span>
+          <span class="epic-story-count">${e.stories.length} 个 Story</span>
+        </div>
+        <div class="epic-name">${e.name}</div>
+        <div class="epic-desc">${e.desc}</div>
+        <div class="epic-priorities">
+          ${sp0 ? `<span class="priority-pill p0">${sp0} P0</span>` : ''}
+          ${sp1 ? `<span class="priority-pill p1">${sp1} P1</span>` : ''}
+          ${sp2 ? `<span class="priority-pill p2">${sp2} P2</span>` : ''}
+        </div>
+      </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('overview').innerHTML = html;
+}
+
+// ── Render Detail ──
+function applyFilters(stories) {
+  let filtered = stories;
+  if (filterPriority !== '全部') filtered = filtered.filter(s => s.priority === filterPriority);
+  if (filterPlatform !== '全部') {
+    if (filterPlatform === 'App+Web') filtered = filtered.filter(s => s.platform.includes('App') && s.platform.includes('Web'));
+    else filtered = filtered.filter(s => {
+      const p = getPlatforms(s.platform);
+      if (filterPlatform === 'App') return p.includes('App');
+      return p.includes('Web') && !p.includes('App');
+    });
+  }
+  if (filterTag !== '全部') {
+    if (filterTag === '未标记') filtered = filtered.filter(s => !getTag(s.id));
+    else filtered = filtered.filter(s => getTag(s.id) === filterTag);
+  }
+  return filtered;
+}
+
+function renderDetail(epicId) {
+  const isAll = epicId === 'ALL';
+  const epic = isAll ? null : EPICS.find(e => e.id === epicId);
+  if (!isAll && !epic) return;
+
+  const allSourceStories = isAll ? allStories() : epic.stories;
+  const filtered = applyFilters(allSourceStories);
+
+  const chevronSvg = `<svg class="story-expand-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>`;
+  let epicNavHtml = `<button class="epic-nav-btn ${isAll ? 'current' : ''}" onclick="navigateToEpic('ALL')" data-tip="显示全部 Story">All</button>` +
+    EPICS.map(e =>
+      `<button class="epic-nav-btn ${e.id === epicId ? 'current' : ''}" onclick="navigateToEpic('${e.id}')" data-tip="${e.name}">${e.id}</button>`
+    ).join('');
+
+  const fp = filterPriority, fpl = filterPlatform, ft = filterTag;
+  const priFilters = ['全部','P0','P1','P2'].map(p =>
+    `<button class="filter-btn ${fp===p?'active':''}" onclick="setFilter('priority','${p}')">${p}</button>`
+  ).join('');
+  const platFilters = ['全部','App+Web','Web'].map(p =>
+    `<button class="filter-btn ${fpl===p?'active':''}" onclick="setFilter('platform','${p}')">${p === 'App+Web' ? 'App + Web' : p}</button>`
+  ).join('');
+  const tagFilterItems = ['全部', ...TAG_OPTIONS.map(t=>t.key), '未标记'];
+  const tagFilters = tagFilterItems.map(t => {
+    const label = t === '全部' ? '全部' : t === '未标记' ? '未标记' : TAG_LABEL[t];
+    return `<button class="filter-btn ${ft===t?'active':''}" onclick="setFilter('tag','${t}')">${label}</button>`;
+  }).join('');
+
+  let html = '';
+
+  html += `<div class="epic-nav">${epicNavHtml}</div>`;
+
+  if (isAll) {
+    const allS = allStories();
+    const p0 = countByPriority(allS,'P0'), p1 = countByPriority(allS,'P1'), p2 = countByPriority(allS,'P2');
+    const appCount = allS.filter(s => s.platform.includes('App')).length;
+    const webOnly = allS.filter(s => s.platform === 'Web').length;
+    html += `
+    <div class="stats-bar fade-in">
+      <div class="stat-card"><span class="stat-label">总 Story 数</span><span class="stat-value">${allS.length}</span></div>
+      <div class="stat-card"><span class="stat-label" style="color:hsl(0 72% 42%)">P0 阻塞/门禁</span><span class="stat-value" style="color:hsl(0 84% 60%)">${p0}</span></div>
+      <div class="stat-card"><span class="stat-label" style="color:hsl(32 80% 32%)">P1 显著提升</span><span class="stat-value" style="color:hsl(38 92% 50%)">${p1}</span></div>
+      <div class="stat-card"><span class="stat-label" style="color:hsl(221 70% 40%)">P2 中长期</span><span class="stat-value" style="color:hsl(221 83% 53%)">${p2}</span></div>
+      <div class="stat-card"><span class="stat-label">涉及 App</span><span class="stat-value">${appCount}</span></div>
+      <div class="stat-card"><span class="stat-label">仅 Web</span><span class="stat-value">${webOnly}</span></div>
+    </div>`;
+  } else {
+    html += `
+    <div class="epic-detail-header">
+      <div class="epic-detail-title">${epic.id} ${epic.name}</div>
+      <div class="epic-detail-desc">${epic.desc}</div>
+    </div>`;
+  }
+
+  html += `
+    <div class="filter-bar">
+      <span class="filter-label">优先级</span>
+      <div class="filter-group">${priFilters}</div>
+      <span class="filter-label">平台</span>
+      <div class="filter-group">${platFilters}</div>
+      <span class="filter-label">标签</span>
+      <div class="filter-group">${tagFilters}</div>
+      <span class="story-count-label">显示 ${filtered.length} / ${allSourceStories.length} 个 Story</span>
+    </div>
+    <div class="story-list fade-in">`;
+
+  let lastEpicId = null;
+  filtered.forEach((s, idx) => {
+    if (isAll) {
+      const eid = s.id.replace(/-S\d+$/, '');
+      if (eid !== lastEpicId) {
+        lastEpicId = eid;
+        const ep = EPICS.find(e => e.id === eid);
+        if (ep) html += `<div class="all-epic-group-header"><span class="all-epic-group-id">${eid}</span>${ep.name}</div>`;
+      }
+    }
+    const platforms = getPlatforms(s.platform);
+    const platformBadges = platforms.map(p => `<span class="badge badge-platform">${p}</span>`).join('');
+    const sourcesHtml = (s.sources || []).map(src =>
+      `<div class="source-item">
+        <span class="source-file">${src.file}</span> <span class="source-line">第 ${src.line} 行</span>
+        <div class="source-quote">${src.quote}</div>
+      </div>`
+    ).join('');
+
+    const tag = getTag(s.id);
+    const tagBtnLabel = tag ? TAG_LABEL[tag] : '+ 标签';
+    const tagBtnClass = tag ? `tag-btn has-tag badge-tag ${tag}` : 'tag-btn';
+    const tagMenuItems = TAG_OPTIONS.map(t =>
+      `<button class="tag-menu-item ${tag===t.key?'active':''}" onclick="event.stopPropagation();setTag('${s.id}','${t.key}')"><span class="tag-dot c-${t.key}"></span>${t.label}</button>`
+    ).join('') + `<button class="tag-menu-item ${!tag?'active':''}" onclick="event.stopPropagation();setTag('${s.id}',null)"><span class="tag-dot" style="background:var(--border)"></span>清除</button>`;
+
+    const link = getLink(s.id);
+    const linkSvg = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.398l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.302"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.398L2.75 8.256a3.25 3.25 0 0 0 4.596 4.596L8.5 11.698"/></svg>';
+    const linkIconClass = link ? 'link-icon has-link' : 'link-icon';
+    const linkAction = link
+      ? `onclick="event.stopPropagation();window.open('${link.replace(/'/g, "\\'")}','_blank')" title="打开外部链接"`
+      : `onclick="event.stopPropagation();toggleLinkInput('${s.id}')" title="添加外部链接"`;
+
+    html += `
+      <div class="story-card" id="story-${s.id}">
+        <div class="story-card-header" onclick="toggleStory('${s.id}')">
+          <span class="story-priority"><span class="badge ${getPriorityClass(s.priority)}">${s.priority}</span></span>
+          <span class="story-title"><span class="story-id">${s.id}</span>${s.title}</span>
+          <div class="tag-selector" onclick="event.stopPropagation()">
+            <button class="${tagBtnClass}" onclick="toggleTagMenu('${s.id}')">${tagBtnLabel}</button>
+            <div class="tag-menu" id="tagmenu-${s.id}">${tagMenuItems}</div>
+          </div>
+          <button class="${linkIconClass}" ${linkAction}>${linkSvg}</button>
+          ${getNote(s.id) ? '<span class="note-indicator" title="有备注"><svg width="14" height="14" viewBox="0 0 16 16" fill="hsl(45 90% 55%)" stroke="hsl(40 70% 40%)" stroke-width="0.8"><path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h9A1.5 1.5 0 0 1 14 3.5v7a1.5 1.5 0 0 1-1.5 1.5H6l-3 2.5V12H3.5A1.5 1.5 0 0 1 2 10.5v-7z"/></svg></span>' : ''}
+          ${platformBadges}
+          ${chevronSvg}
+        </div>
+        ${link ? `<div class="link-display"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 9.25a3.25 3.25 0 0 0 4.596.398l1.904-1.904a3.25 3.25 0 0 0-4.596-4.596L7.5 4.302"/><path d="M9.25 6.75a3.25 3.25 0 0 0-4.596-.398L2.75 8.256a3.25 3.25 0 0 0 4.596 4.596L8.5 11.698"/></svg><a href="${link}" target="_blank" rel="noopener">${link}</a><button class="link-remove" onclick="removeLink('${s.id}')">移除</button></div>` : ''}
+        <div class="link-input-row" id="linkinput-${s.id}"><input class="link-input" type="url" placeholder="输入外部链接后按回车…" onkeydown="if(event.key==='Enter'){event.preventDefault();submitLink('${s.id}',this.value)}"></div>
+        <div class="story-body">
+          <div class="story-section">
+            <div class="story-section-label">任务说明</div>
+            <div class="story-section-content">${s.desc}</div>
+          </div>
+          <div class="story-section">
+            <div class="story-section-label">为什么</div>
+            <div class="story-section-content">${s.why}</div>
+          </div>
+          <div class="story-section">
+            <div class="story-section-label">优先级说明</div>
+            <div class="story-section-content">${s.priorityNote}</div>
+          </div>
+          ${s.sources && s.sources.length ? `
+          <div class="story-section">
+            <div class="story-section-label">可复核来源（${s.sources.length}）</div>
+            <div class="story-section-content">${sourcesHtml}</div>
+          </div>
+          ` : ''}
+          ${getNote(s.id) ? `
+          <div class="note-block" id="notedisplay-${s.id}">
+            <span class="note-block-label">备注</span><span class="note-block-text" onclick="editNote('${s.id}')" title="点击编辑">${getNote(s.id).replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span><button class="link-remove" onclick="removeNote('${s.id}')">移除</button>
+          </div>` : ''}
+          ${!getNote(s.id) ? `<button class="note-add-btn" onclick="toggleNoteInput('${s.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>添加备注</button>` : ''}
+          <div class="note-input-wrap" id="noteinput-${s.id}"><textarea class="note-input" placeholder="输入备注后按回车保存…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitNote('${s.id}',this.value)}"></textarea><div class="note-hint">按 Enter 保存，Shift+Enter 换行</div></div>
+        </div>
+      </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('detail').innerHTML = html;
+}
+
+// ── Navigation ──
+function navigateToOverview() {
+  filterPriority = '全部'; filterPlatform = '全部'; filterTag = '全部';
+  navigateToEpic('ALL');
+}
+
+function navigateToEpic(epicId) {
+  currentView = 'detail'; currentEpic = epicId;
+  document.getElementById('overview').classList.remove('active');
+  document.getElementById('detail').classList.add('active');
+  renderDetail(epicId);
+  window.scrollTo(0, 0);
+  history.pushState(null, '', `${location.pathname}#${epicId}`);
+}
+
+function setFilter(type, value) {
+  if (type === 'priority') filterPriority = value;
+  else if (type === 'platform') filterPlatform = value;
+  else if (type === 'tag') filterTag = value;
+  renderDetail(currentEpic);
+}
+
+function toggleStory(id) {
+  const el = document.getElementById('story-' + id);
+  if (el) el.classList.toggle('expanded');
+}
+
+
+// ── Tag functions ──
+function toggleTagMenu(storyId) {
+  const menu = document.getElementById('tagmenu-' + storyId);
+  document.querySelectorAll('.tag-menu.open').forEach(m => { if (m !== menu) m.classList.remove('open'); });
+  menu?.classList.toggle('open');
+}
+
+function setTag(storyId, tagKey) {
+  if (tagKey) TAGS[storyId] = tagKey;
+  else delete TAGS[storyId];
+  persistTags();
+  markDirty();
+  document.querySelectorAll('.tag-menu.open').forEach(m => m.classList.remove('open'));
+  renderDetail(currentEpic);
+}
+
+// ── Link functions ──
+function toggleLinkInput(storyId) {
+  const row = document.getElementById('linkinput-' + storyId);
+  if (!row) return;
+  const isOpen = row.classList.toggle('open');
+  if (isOpen) row.querySelector('input')?.focus();
+}
+function submitLink(storyId, url) {
+  url = url.trim();
+  if (!url) return;
+  LINKS[storyId] = url;
+  persistLinks();
+  markDirty();
+  renderDetail(currentEpic);
+}
+function removeLink(storyId) {
+  delete LINKS[storyId];
+  persistLinks();
+  markDirty();
+  renderDetail(currentEpic);
+}
+
+// ── Note functions ──
+function toggleNoteInput(storyId) {
+  const wrap = document.getElementById('noteinput-' + storyId);
+  if (!wrap) return;
+  const isOpen = wrap.classList.toggle('open');
+  if (isOpen) wrap.querySelector('textarea')?.focus();
+}
+function submitNote(storyId, text) {
+  text = text.trim();
+  if (!text) return;
+  NOTES[storyId] = text;
+  persistNotes();
+  markDirty();
+  renderDetail(currentEpic);
+}
+function editNote(storyId) {
+  const display = document.getElementById('notedisplay-' + storyId);
+  const wrap = document.getElementById('noteinput-' + storyId);
+  if (!wrap) return;
+  if (display) display.style.display = 'none';
+  wrap.classList.add('open');
+  const ta = wrap.querySelector('textarea');
+  if (ta) { ta.value = NOTES[storyId] || ''; ta.focus(); }
+}
+function removeNote(storyId) {
+  delete NOTES[storyId];
+  persistNotes();
+  markDirty();
+  renderDetail(currentEpic);
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.tag-menu.open').forEach(m => m.classList.remove('open'));
+});
+
+function exportMarkdown() {
+  let md = '# **experience-squad-work-plan-all-selected-v5**\n\n';
+  md += '## **文档信息**\n\n';
+  md += '- **生成日期**：2026-02-23  \n';
+  md += '- **范围**：WeDevote Bible 体验提升\n\n---\n\n';
+  md += '## **Epic 列表（体验提升小分队的"主题战场"）**\n\n';
+  EPICS.forEach(e => { md += `- **${e.id} ${e.name}**：${e.desc}  \n`; });
+  md += '\n---\n\n## **工作项清单（按 Epic 分组；每项=一个 Story）**\n\n';
+  EPICS.forEach(e => {
+    md += `### **${e.id} ${e.name}**\n\n`;
+    e.stories.forEach(s => {
+      md += `- **${s.id}｜${s.title}**  \n`;
+      md += `  - **任务说明**：${s.desc}  \n`;
+      md += `  - **涉及平台**：${s.platform}  \n`;
+      md += `  - **为什么**：${s.why}  \n`;
+      md += `  - **优先级**：${s.priority}  \n`;
+      md += `  - **优先级说明**：${s.priorityNote}  \n`;
+      const tag = getTag(s.id);
+      if (tag) md += `  - **需求标签**：${TAG_LABEL[tag]}  \n`;
+      const link = getLink(s.id);
+      if (link) md += `  - **外部分析报告**：[${link}](${link})  \n`;
+      const note = getNote(s.id);
+      if (note) md += `  - **备注**：${note.replace(/\n/g, '；')}  \n`;
+      if (s.sources && s.sources.length) {
+        md += `  - **可复核来源**：  \n`;
+        s.sources.forEach(src => {
+          md += `    - \`${src.file}\`：  \n`;
+          md += `      - 第 ${src.line} 行：  \n`;
+          md += `        - ${src.quote}  \n`;
+        });
+      }
+    });
+    md += '\n';
+  });
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'experience-squad-work-plan-viewer.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportData() { exportToFile(); }
+
+window.addEventListener('beforeunload', e => {
+  if (dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+function initGithubSyncUi() {
+  applyGithubConfigToInputs();
+  ghLastSavedBody = _buildJS();
+  if (!ghCfg.enabled) {
+    _setGithubStatus('未启用 GitHub 自动保存');
+    return;
+  }
+  const missing = _validateGithubCfg(true);
+  if (missing.length) {
+    _setGithubStatus(`自动保存未就绪：缺少 ${missing.join('、')}`, 'err');
+    return;
+  }
+  _setGithubStatus('自动保存已启用，正在拉取远端最新数据...');
+  pullFromGitHub({ silent: true }).then((ok) => {
+    if (ok) {
+      _setGithubStatus('自动保存已启用，已拉取远端数据。', 'ok');
+    } else if (!dirty) {
+      _setGithubStatus('自动保存已启用；远端拉取失败，可手动点击“从 GitHub 拉取”查看错误。');
+    }
+  });
+}
+
+// ── Init ──
+initGithubSyncUi();
+renderOverview();
+if (location.hash) {
+  const epicId = location.hash.slice(1);
+  if (epicId === 'ALL' || EPICS.find(e => e.id === epicId)) navigateToEpic(epicId);
+} else {
+  navigateToEpic('ALL');
+}
+window.addEventListener('popstate', () => {
+  if (location.hash) {
+    const epicId = location.hash.slice(1);
+    if (epicId === 'ALL' || EPICS.find(e => e.id === epicId)) navigateToEpic(epicId);
+  } else { navigateToEpic('ALL'); }
+});
+</script>
+</body>
+</html>
