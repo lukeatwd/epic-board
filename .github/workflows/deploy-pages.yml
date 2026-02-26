@@ -25,6 +25,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Ensure Pages Is Enabled
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          API="https://api.github.com/repos/${GH_REPO}/pages"
+          COMMON_HEADERS=(
+            -H "Accept: application/vnd.github+json"
+            -H "Authorization: Bearer ${GH_TOKEN}"
+            -H "X-GitHub-Api-Version: 2022-11-28"
+          )
+
+          code=$(curl -sS -o /tmp/pages-get.json -w "%{http_code}" "${COMMON_HEADERS[@]}" "$API")
+          if [ "$code" = "200" ]; then
+            echo "Pages already enabled."
+            exit 0
+          fi
+
+          if [ "$code" != "404" ]; then
+            echo "Unexpected GET /pages status: $code"
+            cat /tmp/pages-get.json
+            exit 1
+          fi
+
+          create_code=$(curl -sS -o /tmp/pages-create.json -w "%{http_code}" \
+            -X POST "${COMMON_HEADERS[@]}" "$API" \
+            -d '{"build_type":"workflow","source":{"branch":"main","path":"/"}}')
+
+          if [ "$create_code" = "201" ] || [ "$create_code" = "409" ]; then
+            echo "Pages enabled (status $create_code)."
+            exit 0
+          fi
+
+          echo "Failed to enable Pages, status: $create_code"
+          cat /tmp/pages-create.json
+          exit 1
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
